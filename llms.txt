@@ -52,11 +52,6 @@ analysis and multi-scenario climate change projections.
     ├── _pkgdown.yml
     └── README.md
 
-`ThermoPheno_functions.R` and `app.R` share the same modelling logic.
-The functions file is designed to be sourced independently for scripted
-or batch analyses, while `app.R` is fully self-contained for deployment
-as a Shiny app.
-
 ------------------------------------------------------------------------
 
 ## Quick Start
@@ -266,8 +261,15 @@ MIT — free to use, modify, and redistribute with attribution.
 ## Package usage
 
 ``` r
-# install.packages("remotes")
-remotes::install_github("yourusername/ThermoPheno")
+# 1. Install the 'remotes' package if you don't have it yet
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+
+# 2. Install the package directly from GitHub
+remotes::install_github("MR-Eini/ThermoPheno")
+
+# 3. Load the package and launch the app
 library(ThermoPheno)
 ThermoPheno()
 ```
