@@ -73,6 +73,7 @@ remotes::install_github("MR-Eini/ThermoPheno")
 # 3. Load the package and launch the app
 library(ThermoPheno)
 ThermoPheno()
+```
 
 ## Running the application
 
@@ -91,8 +92,6 @@ shiny::runApp("inst/app/app.R")
 ```
 
 If you are working in RStudio, you can also open the app file and run it interactively.
-
-```
 
 Example files are bundled in `inst/extdata` and can be accessed with:
 
@@ -268,9 +267,21 @@ For full theoretical documentation including all equations, crop parameter ratio
 
 ---
 
+## Citation and reuse
+
+If you use this workflow in a report/paper, you can cite the repository:
+```r
+Mohammad Reza Eini, Department of Hydrology, Meteorology, and Water Management, 
+Institute of Environmental Engineering, Warsaw University of Life Sciences, Warsaw, Poland
+ThermoPheno: A thermal-time-based phenology model for assessing crop growing season shifts under climate change. 
+GitHub repository. https://github.com/MR-Eini/ThermoPheno
+```
+
+## Repository link
+
+GitHub repository: `MR-Eini/ThermoPheno`
+
 ## License
 
-MIT — free to use, modify, and redistribute with attribution.
-
-
+This repository currently indicates: **MIT, GPL-3.0**.
 
