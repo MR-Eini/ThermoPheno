@@ -12,7 +12,7 @@ navbar:
   components:
     github:
       icon: fab fa-github
-      href: https://github.com/yourusername/ThermoPheno
+      href: https://github.com/MR-Eini/ThermoPheno
 
 home:
   title: ThermoPheno
