@@ -225,7 +225,6 @@ The model is grounded in the classical thermal time / growing degree day literat
 - Wang & Engel (1998). *Simulation of phenological development of wheat crops.* Agricultural Systems, 58(1), 1–24.
 - Bonhomme (2000). *Bases and limits to using 'degree.day' units.* European Journal of Agronomy, 13(1), 1–10.
 
-For full theoretical documentation including all equations, crop parameter rationale, and model assumptions, see **`ThermoPheno_Theory.docx`**.
 
 ---
 
