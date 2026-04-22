@@ -1,0 +1,24 @@
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#146C94"
+    secondary: "#F6F1F1"
+
+navbar:
+  structure:
+    left: [home, reference, articles, news]
+    right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/yourusername/ThermoPheno
+
+home:
+  title: ThermoPheno
+  description: Thermal-time crop phenology simulation with a Shiny app.
+
+reference:
+  - title: Launch app
+    contents:
+      - ThermoPheno

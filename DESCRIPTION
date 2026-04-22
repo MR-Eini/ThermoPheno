@@ -1,0 +1,27 @@
+Package: ThermoPheno
+Type: Package
+Title: Thermal-Time-Based Crop Phenology Model
+Version: 0.1.0
+Authors@R: 
+    person("Mamad", "User", email = "your@email.com", role = c("aut", "cre"))
+Description: 
+    ThermoPheno is a thermal-time-based phenology model for simulating crop 
+    growing seasons under historical and climate change conditions. It includes 
+    a Shiny application and a set of functions for estimating thermal time, 
+    crop maturity, and growing season dynamics.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    shiny,
+    dplyr,
+    lubridate,
+    ggplot2,
+    DT,
+    readr,
+    ggridges,
+    RColorBrewer,
+    tidyr,
+    tibble
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
