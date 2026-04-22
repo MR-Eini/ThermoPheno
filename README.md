@@ -59,15 +59,46 @@ install.packages(c(
 ))
 ```
 
-The app will automatically install any missing packages on first launch.
-
-### Running the App
+## Installation
 
 ```r
-shiny::runApp("app.R")
+# 1. Install the 'remotes' package if you don't have it yet
+if (!requireNamespace("remotes", quietly = TRUE)) {
+  install.packages("remotes")
+}
+
+# 2. Install the package directly from GitHub
+remotes::install_github("MR-Eini/ThermoPheno")
+
+# 3. Load the package and launch the app
+library(ThermoPheno)
+ThermoPheno()
+
+## Running the application
+
+There are two practical ways to launch the app.
+
+### Option 1: launch from the installed package
+
+```r
+ThermoPheno::run_thermopheno_app()
 ```
 
-Or from within RStudio, open `app.R` and click **Run App**.
+### Option 2: run the Shiny app directly from the repository
+
+```r
+shiny::runApp("inst/app/app.R")
+```
+
+If you are working in RStudio, you can also open the app file and run it interactively.
+
+```
+
+Example files are bundled in `inst/extdata` and can be accessed with:
+
+```r
+system.file("extdata", package = "ThermoPheno")
+```
 
 ---
 
@@ -242,24 +273,4 @@ For full theoretical documentation including all equations, crop parameter ratio
 MIT — free to use, modify, and redistribute with attribution.
 
 
-## Package usage
 
-```r
-# 1. Install the 'remotes' package if you don't have it yet
-if (!requireNamespace("remotes", quietly = TRUE)) {
-  install.packages("remotes")
-}
-
-# 2. Install the package directly from GitHub
-remotes::install_github("MR-Eini/ThermoPheno")
-
-# 3. Load the package and launch the app
-library(ThermoPheno)
-ThermoPheno()
-```
-
-Example files are bundled in `inst/extdata` and can be accessed with:
-
-```r
-system.file("extdata", package = "ThermoPheno")
-```
