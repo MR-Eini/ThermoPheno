@@ -1,13 +1,14 @@
 # ThermoPheno
 
 **Crop Phenology Simulation Model — Historical Analysis & Climate Change
-Impact Assessment** ThermoPheno: A thermal-time-based phenology model
-for assessing crop growing season shifts under climate change
-ThermoPheno models the timing of crop planting, maturity, and harvest
-using daily temperature data and the growing degree day (GDD / thermal
-time) framework. It runs as a self-contained R Shiny application and
-supports both historical climate analysis and multi-scenario climate
-change projections.
+Impact Assessment**
+
+ThermoPheno: A thermal-time-based phenology model for assessing crop
+growing season shifts under climate change ThermoPheno models the timing
+of crop planting, maturity, and harvest using daily temperature data and
+the growing degree day (GDD / thermal time) framework. It runs as a
+self-contained R Shiny application and supports both historical climate
+analysis and multi-scenario climate change projections.
 
 ------------------------------------------------------------------------
 
