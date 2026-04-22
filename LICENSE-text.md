@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2026
-    COPYRIGHT HOLDER: Mohammadreza Einikarimkandi
+    COPYRIGHT HOLDER: Mohammad Reza Eini
