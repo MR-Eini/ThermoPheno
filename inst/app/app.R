@@ -12,6 +12,8 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 safe_as_date <- function(x) as.Date(x)
 
+options(shiny.maxRequestSize = 200 * 1024^2)
+
 clamp_year_day <- function(year, mmdd) {
   as.Date(paste0(year, "-", mmdd))
 }
