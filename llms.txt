@@ -212,46 +212,6 @@ Each simulated season produces:
 
 ------------------------------------------------------------------------
 
-## Scripted / Batch Use
-
-Source the functions file and call `run_simulation()` directly:
-
-``` r
-source("ThermoPheno_functions.R")
-
-weather <- prepare_weather(read.csv("my_weather.csv"))
-
-# Calibrate
-cal <- estimate_required_tt(
-  weather          = weather,
-  baseline_years   = 1990:2010,
-  planting_mmdd    = "04-15",
-  days_to_maturity = 140,
-  t_base           = 8,
-  t_opt            = 25,
-  t_max_cut        = 35,
-  tt_mode          = "triangular",
-  crop_type        = "summer"
-)
-
-# Simulate all years
-results <- run_simulation(
-  weather              = weather,
-  crop_name            = "Maize",
-  required_tt          = cal$required_tt,
-  earliest_planting_mmdd = "03-15",
-  latest_planting_mmdd   = "05-31",
-  latest_harvest_mmdd    = "10-01",
-  t_base               = 8,
-  t_opt                = 25,
-  t_max_cut            = 35,
-  tt_mode              = "triangular",
-  crop_type            = "summer"
-)
-
-print(results)
-```
-
 ------------------------------------------------------------------------
 
 ## Key Assumptions
