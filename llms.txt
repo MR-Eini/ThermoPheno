@@ -239,10 +239,6 @@ literature:
 - Bonhomme (2000). *Bases and limits to using ‘degree.day’ units.*
   European Journal of Agronomy, 13(1), 1–10.
 
-For full theoretical documentation including all equations, crop
-parameter rationale, and model assumptions, see
-**`ThermoPheno_Theory.docx`**.
-
 ------------------------------------------------------------------------
 
 ## Citation and reuse
