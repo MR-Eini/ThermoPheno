@@ -79,6 +79,10 @@ simulate_one_year(
 
   `summer` or `winter`.
 
+- min_mean_temp_plant:
+
+  Minimum daily mean temperature required for summer-crop planting.
+
 - forced_harvest_allowed:
 
   Logical; whether immature forced harvest is allowed.
