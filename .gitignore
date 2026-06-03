@@ -1,7 +1,11 @@
+.Rproj.user
 .Rhistory
 .RData
-.Rproj.user/
-.Rproj
 .Ruserdata
-/docs/
-/pkgdown/
+*.tar.gz
+*.zip
+.Rcheck/
+docs/
+pkgdown/
+validation/cache/
+validation/results/

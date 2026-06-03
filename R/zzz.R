@@ -1,10 +1,7 @@
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage(
-"ThermoPheno loaded.
-
-Run the app using:
-  ThermoPheno()
-
-Example files are available via system.file('extdata', package = 'ThermoPheno')."
+    "ThermoPheno loaded.\n",
+    "Run the app using: ThermoPheno::run_thermopheno_app()\n",
+    "Example files: system.file('extdata', package = 'ThermoPheno')"
   )
 }
