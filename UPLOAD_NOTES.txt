@@ -20,3 +20,7 @@ rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))
 pkgdown::build_site()
 
 Then push the generated pkgdown site or allow the GitHub Actions pkgdown workflow to rebuild it.
+
+
+Correction in this version:
+- README.md now includes the corrected repository structure, including .github/, tests/, validation/, vignettes/, NEWS.md, RUN_CHECKS.R, SOURCE_PACKAGE_NOTES.md, and man/figures/.
