@@ -1,9 +1,24 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
-<url><loc>/404.html</loc></url>
-<url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/authors.html</loc></url>
-<url><loc>/index.html</loc></url>
-<url><loc>/reference/ThermoPheno.html</loc></url>
-<url><loc>/reference/index.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/404.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/LICENSE-text.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/SOURCE_PACKAGE_NOTES.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/articles/ThermoPheno-introduction.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/articles/index.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/authors.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/index.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/news/index.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/ThermoPheno.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/calc_daily_tt.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/compare_validation_metrics.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/default_parameters.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/estimate_required_tt.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/estimate_required_tt_from_observed.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/find_planting_date.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/index.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/prepare_weather.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/run_simulation.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/run_thermopheno_app.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/simulate_one_year.html</loc></url>
+<url><loc>https://mr-eini.github.io/ThermoPheno/reference/validate_weather_dwd.html</loc></url>
 </urlset>
 
