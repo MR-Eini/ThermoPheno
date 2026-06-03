@@ -30,7 +30,7 @@ run_simulation(
 )
 }
 \arguments{
-\item{weather}{Prepared weather data returned by \code{\link[=prepare_weather]{prepare_weather()}}.}
+\item{weather}{Prepared weather data returned by \code{prepare_weather()}.}
 
 \item{crop_name}{Crop label.}
 
@@ -51,6 +51,8 @@ run_simulation(
 \item{tt_mode}{Thermal-time method.}
 
 \item{crop_type}{\code{summer} or \code{winter}.}
+
+\item{min_mean_temp_plant}{Minimum daily mean temperature required for summer-crop planting.}
 
 \item{forced_harvest_allowed}{Logical; whether immature forced harvest is allowed.}
 

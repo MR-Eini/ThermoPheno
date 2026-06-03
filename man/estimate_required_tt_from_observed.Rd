@@ -20,7 +20,7 @@ estimate_required_tt_from_observed(
 )
 }
 \arguments{
-\item{weather}{Prepared weather data from \code{\link[=prepare_weather]{prepare_weather()}}.}
+\item{weather}{Prepared weather data from \code{prepare_weather()}.}
 
 \item{observed_calendar}{Data frame with observed planting and harvest dates.}
 

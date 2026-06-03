@@ -81,7 +81,7 @@ calc_daily_tt <- function(tmin, tmax, t_base, t_opt = NA_real_, t_max_cut = NA_r
 
 #' Estimate required thermal time from a reference baseline period
 #'
-#' @param weather Prepared weather data returned by [prepare_weather()].
+#' @param weather Prepared weather data returned by `prepare_weather()`.
 #' @param baseline_years Integer vector of baseline years.
 #' @param planting_mmdd Reference planting date in `MM-DD` format.
 #' @param days_to_maturity Reference number of days from planting to maturity.
@@ -216,6 +216,7 @@ find_planting_date <- function(weather_window,
 #' @param earliest_planting_mmdd Earliest planting date in `MM-DD` format.
 #' @param latest_planting_mmdd Latest planting date in `MM-DD` format.
 #' @param latest_harvest_mmdd Latest harvest date in `MM-DD` format.
+#' @param min_mean_temp_plant Minimum daily mean temperature required for summer-crop planting.
 #' @param forced_harvest_allowed Logical; whether immature forced harvest is allowed.
 #' @param min_fraction_tt_for_forced_harvest Minimum maturity fraction for forced harvest.
 #' @param winter_plant_temp_min Minimum winter-crop planting temperature.
@@ -560,7 +561,7 @@ compare_validation_metrics <- function(df, observed_col = "observed_date", simul
 
 #' Estimate required thermal time from observed planting and harvest dates
 #'
-#' @param weather Prepared weather data from [prepare_weather()].
+#' @param weather Prepared weather data from `prepare_weather()`.
 #' @param observed_calendar Data frame with observed planting and harvest dates.
 #' @param calibration_years Years used for thermal-time calibration.
 #' @param planting_col Name of observed planting-date column.

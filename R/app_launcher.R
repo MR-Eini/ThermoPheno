@@ -24,7 +24,7 @@ run_thermopheno_app <- function() {
 
 #' Launch the ThermoPheno Shiny application
 #'
-#' Alias for [run_thermopheno_app()].
+#' Alias for `run_thermopheno_app()`.
 #'
 #' @return The function is called for its side effect of launching the app.
 #' @export

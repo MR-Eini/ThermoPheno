@@ -23,7 +23,7 @@ estimate_required_tt(
 )
 }
 \arguments{
-\item{weather}{Prepared weather data returned by \code{\link[=prepare_weather]{prepare_weather()}}.}
+\item{weather}{Prepared weather data returned by \code{prepare_weather()}.}
 
 \item{baseline_years}{Integer vector of baseline years.}
 
