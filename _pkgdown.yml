@@ -1,10 +1,25 @@
-url: https://mr-eini.github.io/ThermoPheno-dev/
+url: https://mr-eini.github.io/ThermoPheno/
+
 template:
   bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#146C94"
+    secondary: "#F6F1F1"
+
 navbar:
   structure:
-    left: [reference, articles, news]
+    left: [home, reference, articles, news]
     right: [github]
+  components:
+    github:
+      icon: fab fa-github
+      href: https://github.com/MR-Eini/ThermoPheno
+
+home:
+  title: ThermoPheno
+  description: Thermal-time crop phenology simulation with a Shiny app.
+
 reference:
   - title: Core model functions
     contents:
