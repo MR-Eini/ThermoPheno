@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "Please cite this software when using it in research."
+type: software
+title: "ThermoPheno: Thermal-Time-Based Crop Phenology Simulation"
+authors:
+  - family-names: "Eini"
+    given-names: "Mohammad Reza"
+    orcid: "https://orcid.org/0000-0002-3323-5952"
+    affiliation: "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW"
+version: "0.1.0"
+date-released: "2026-10-24"
+repository-code: "https://github.com/MR-Eini/ThermoPheno"
+url: "https://github.com/MR-Eini/ThermoPheno"
+license: MIT
+

@@ -12,3 +12,5 @@
 ^validation/results$
 ^README_files$
 ^README[.]Rmd$
+^[.]zenodo[.]json$
+^CITATION[.]cff$
