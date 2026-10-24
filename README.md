@@ -1,5 +1,9 @@
 # ThermoPheno
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23619166.svg)](https://doi.org/10.5281/zenodo.23619166)
+
+Archived release 0.1.0: [10.5281/zenodo.23619167](https://doi.org/10.5281/zenodo.23619167).
+
 **ThermoPheno** is an R package and Shiny application for thermal-time-based crop phenology simulation. It estimates crop planting, maturity, and harvest timing from daily minimum and maximum temperature data and supports historical analysis, climate-scenario comparison, observed-phenology validation, and benchmarking against external crop calendar or agro-hydrological model outputs.
 
 Package website: <https://mr-eini.github.io/ThermoPheno/>  
@@ -250,7 +254,7 @@ pkgdown::build_site()
 
 If you use ThermoPheno in a report, repository, or paper, cite it as:
 
-> Eini, M. R. (2026). **ThermoPheno: Thermal-Time-Based Crop Phenology Model**. R package version 0.1.0. GitHub repository: <https://github.com/MR-Eini/ThermoPheno>
+> Eini, M. R. (2026). **ThermoPheno: Thermal-Time-Based Crop Phenology Simulation** (Version 0.1.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.23619167
 
 ## License
 
