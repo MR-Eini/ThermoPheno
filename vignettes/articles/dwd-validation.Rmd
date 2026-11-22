@@ -1,0 +1,102 @@
+---
+title: "Validation against DWD phenology observations"
+---
+
+ThermoPheno 0.1.1 was evaluated against observed sowing and harvest dates for
+maize, sugar beet and winter wheat in Germany. The run and data access date
+were 22 November 2026.
+
+## Site selection and calibration
+
+We used the DWD annual-reporter crop archives through 2024. The analysis
+selected the DWD objects 215 (maize), 253 (sugar beet) and 202 (winter wheat),
+and phases 10 (start of sowing) and 24 (harvest). Observations flagged doubtful
+or incorrect were removed. Multiple reports within a crop, station, harvest
+year and phase were reduced to the median date. For winter wheat, August to
+December sowing observations were assigned to the following harvest year.
+
+Within each crop, we ranked phenology stations with coordinates by the number
+of valid planting–harvest calendars in **1991–2010**, breaking ties by station
+ID. We attempted the first 25 stations with at least three such calendars.
+Each was matched to the nearest DWD climate station with a historical daily
+archive and station metadata spanning 1991–2024.
+
+We calibrated one thermal-time requirement per crop and phenology station
+using `estimate_required_tt_from_observed()`. The requirement is the median of
+the triangular thermal-time sums between observed planting and harvest in
+1991–2010. Calibration required at least three seasons with temperature data
+for at least 95% of the observed interval and a positive median. The
+[crop configuration](https://github.com/MR-Eini/ThermoPheno/blob/main/validation/crop_config.csv)
+records the temperature thresholds and scheduling rules.
+
+## Held-out evaluation
+
+We simulated planting from daily temperature and the crop's planting window.
+Thermal time determined maturity. The configured harvest deadline could
+trigger forced harvest below maturity. We compared dates with the paired
+observations for **2011–2024**, requiring temperature data for at least 95% of
+the configured season. A year without an eligible simulated date contributes
+to the case counts and has no numeric error for that stage.
+
+| Crop | Phase | Paired dates | Bias (days) | MAE (days) | RMSE (days) | R² |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Maize | Planting | 152 | 0.29 | 7.17 | 9.58 | 0.097 |
+| Maize | Harvest | 152 | −7.34 | 15.33 | 19.58 | 0.251 |
+| Sugar beet | Planting | 168 | −0.60 | 7.36 | 15.83 | 0.053 |
+| Sugar beet | Harvest | 168 | −15.92 | 19.37 | 24.49 | 0.055 |
+| Winter wheat | Planting | 217 | −8.76 | 10.39 | 13.49 | 0.002 |
+| Winter wheat | Harvest | 209 | 13.33 | 14.52 | 17.18 | 0.096 |
+
+Bias is simulated minus observed date. R² is the squared Pearson correlation
+between observed and simulated days of year where both vary, a measure of
+association. Harvest metrics include forced harvests. Station-years can share
+climate stations, so the paired counts do not represent independent tests.
+
+<img src="../validation/validation_scatter_planting.png" alt="Simulated and observed planting day of year, by crop, with a dashed 1:1 line">
+
+<img src="../validation/validation_scatter_harvest.png" alt="Simulated and observed harvest day of year, by crop, with a dashed 1:1 line">
+
+<img src="../validation/validation_error_distribution.png" alt="Signed planting and harvest errors, with a zero reference line, for each crop">
+
+## Attempted stations and exclusions
+
+| Crop | Attempted station–crop cases | Insufficient calibration | No held-out calendar | At least one paired planting date |
+| --- | ---: | ---: | ---: | ---: |
+| Maize | 25 | 5 | 1 | 19 |
+| Sugar beet | 25 | 1 | 3 | 21 |
+| Winter wheat | 25 | 3 | 2 | 20 |
+
+Eight sugar beet and two winter wheat held-out seasons lacked sufficient
+weather. Eight wheat seasons failed to mature without a simulated harvest
+date. There were eight forced maize harvests and 174 forced winter wheat
+harvests. The high frequency of forced wheat harvest and the early sugar beet
+harvest bias limit the usefulness of these settings for scheduling. The winter
+wheat calibration sums thermal time over the observed calendar. The winter
+simulation also applies its vernalization and dormancy rules, which can
+reduce the thermal time it accumulates over an equivalent interval.
+
+The sample favors stations with long calibration histories. Results describe
+this subset, crop configuration and climate-station matching procedure.
+
+- [All 75 attempted crop–station cases and their outcomes](../validation/nearest_climate_station_matches.csv)
+- [Held-out station-year dates, errors and statuses](../validation/validation_pairs.csv)
+- [Metrics by crop and phase](../validation/validation_metrics.csv) and [by station](../validation/validation_metrics_by_station.csv)
+- [Calibration thermal-time records](../validation/required_tt_calibration_by_station.csv)
+- [Input URLs and checksums](../validation/dwd_input_manifest.csv), [run log](../validation/run.log), and [R session information](../validation/session_info.txt)
+
+## Reproduce the run
+
+Install ThermoPheno 0.1.1 and run the
+[validation script](https://github.com/MR-Eini/ThermoPheno/blob/main/validation/dwd_validate_thermopheno.R)
+from the repository root. Use the manifest to verify the DWD inputs.
+
+```sh
+Rscript validation/dwd_validate_thermopheno.R
+```
+
+Source: Deutscher Wetterdienst (DWD), Climate Data Center. The tables and
+plots use filtered, aggregated observations and model-derived quantities.
+[Historical crop phenology](https://opendata.dwd.de/climate_environment/CDC/observations_germany/phenology/annual_reporters/crops/historical/) ·
+[Historical daily climate observations](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/daily/kl/historical/) ·
+[DWD CDC terms of use](https://opendata.dwd.de/climate_environment/CDC/Terms_of_use.pdf) ·
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

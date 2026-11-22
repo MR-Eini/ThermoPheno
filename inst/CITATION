@@ -1,0 +1,15 @@
+citHeader("To cite ThermoPheno in publications use:")
+
+bibentry(
+  bibtype = "Manual",
+  title = "ThermoPheno: Thermal-Time-Based Crop Phenology Simulation",
+  author = person("Mohammad Reza", "Eini"),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  url = "https://doi.org/10.5281/zenodo.23619166",
+  textVersion = paste(
+    "Eini, M. R. (2026). ThermoPheno: Thermal-Time-Based Crop Phenology Simulation",
+    paste0("(Version ", meta$Version, ") [Computer software]."),
+    "Zenodo archive: https://doi.org/10.5281/zenodo.23619166"
+  )
+)

@@ -15,3 +15,8 @@ A data frame sorted by date.
 \description{
 Standardises column names and adds \code{year}, \code{doy}, and \code{tmean} columns.
 }
+\details{
+The bundled files ending in \code{_dummy_data.csv} contain synthetic weather
+for demonstrations. See \code{system.file("extdata", "DWD_DATA_LICENSE.md",
+package = "ThermoPheno")} for the source and license of the separate DWD example.
+}

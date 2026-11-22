@@ -10,6 +10,7 @@
 ^ThermoPheno_.*[.]tar[.]gz$
 ^validation/cache$
 ^validation/results$
+^vignettes/articles$
 ^README_files$
 ^README[.]Rmd$
 ^[.]zenodo[.]json$

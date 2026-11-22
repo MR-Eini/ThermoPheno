@@ -1,7 +1,7 @@
 Package: ThermoPheno 
 Type: Package
 Title: Thermal-Time-Based Crop Phenology Simulation
-Version: 0.1.0
+Version: 0.1.1
 Authors@R:
     person(given = "Mohammad Reza",
            family = "Eini",

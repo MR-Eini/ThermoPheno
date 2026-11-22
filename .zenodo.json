@@ -1,15 +1,15 @@
 {
   "title": "ThermoPheno: Thermal-Time-Based Crop Phenology Simulation",
   "upload_type": "software",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "creators": [
     {
       "name": "Eini, Mohammad Reza",
-      "affiliation": "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW",
+      "affiliation": "Warsaw University of Life Sciences – SGGW",
       "orcid": "0000-0002-3323-5952"
     }
   ],
-  "description": "ThermoPheno is an R package and Shiny application for simulating crop planting, maturity, and harvest timing from daily minimum and maximum air temperatures. It supports simple, capped, and triangular thermal-time calculations; summer and winter crop workflows; temperature-based planting windows; baseline and observed-phenology calibration; climate-scenario comparison; and validation workflows. Bundled weather examples are synthetic. Winter dormancy and vernalization are simplified; photoperiod, water stress, cultivar differences, and frost-kill processes are not explicitly represented. This software release does not establish predictive accuracy for a particular crop, site, or scenario.",
+  "description": "ThermoPheno is an R package and Shiny application for simulating crop planting, maturity, and harvest timing from daily minimum and maximum air temperatures. It supports simple, capped, and triangular thermal-time calculations; summer and winter crop workflows; temperature-based planting windows; baseline and observed-phenology calibration; climate-scenario comparison; and validation workflows. Bundled data include synthetic weather examples and an attributed extract of observed daily temperatures from the Deutscher Wetterdienst. Winter dormancy and vernalization are simplified; photoperiod, water stress, cultivar differences, and frost-kill processes are not explicitly represented. This software release does not establish predictive accuracy for a particular crop, site, or scenario.",
   "license": "mit",
   "access_right": "open",
   "language": "eng",
@@ -26,7 +26,11 @@
       "identifier": "https://github.com/MR-Eini/ThermoPheno",
       "relation": "isSupplementTo",
       "scheme": "url"
+    },
+    {
+      "identifier": "10.1016/j.jhydrol.2026.135767",
+      "relation": "references",
+      "scheme": "doi"
     }
   ]
 }
-

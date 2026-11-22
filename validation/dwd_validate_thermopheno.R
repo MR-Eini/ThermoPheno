@@ -2,8 +2,6 @@
 # Run from repository root:
 #   source("validation/dwd_validate_thermopheno.R")
 #
-# This version fixes DWD phenology discovery for the current CDC structure:
-# DWD crop phenology files are plain .txt files, not ZIP archives.
 
 suppressPackageStartupMessages({
   library(ThermoPheno)
@@ -16,16 +14,8 @@ suppressPackageStartupMessages({
 
 options(stringsAsFactors = FALSE)
 
-# Prefer local package source files when the script is run from the repository root.
-# This lets the validation use newly added functions before the package is reinstalled.
-if (file.exists("R/ThermoPheno_functions.R")) {
-  source("R/ThermoPheno_functions.R", local = globalenv(), encoding = "UTF-8")
-}
-
-# Thermal-time calibration mode.
-# TRUE: estimate required_tt from observed DWD planting-to-harvest calendars during 1991-2010.
-# FALSE: use the reference-date/days-to-maturity method.
-USE_OBSERVED_TT_CALIBRATION <- TRUE
+calib_years <- 1991:2010
+valid_years <- 2011:2024
 OBSERVED_TT_SUMMARY_FUN <- "median"
 MIN_OBSERVED_TT_YEARS <- 3
 MIN_WEATHER_COVERAGE <- 0.95
@@ -45,8 +35,7 @@ dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(res_dir, recursive = TRUE, showWarnings = FALSE)
 
 message("Reading validation crop configuration...")
-cfg <- readr::read_csv("validation/crop_config.csv", show_col_types = FALSE, trim_ws = TRUE) %>%
-  mutate(vernalization_required = as.logical(vernalization_required))
+cfg <- readr::read_csv("validation/crop_config.csv", show_col_types = FALSE, trim_ws = TRUE)
 
 normalise_names <- function(x) {
   names(x) <- iconv(names(x), from = "Latin1", to = "ASCII//TRANSLIT", sub = "")
@@ -63,12 +52,22 @@ read_index_links <- function(url) {
   href[grepl("\\.zip$|\\.txt$|\\.TXT$|\\.csv$|\\.CSV$", href)]
 }
 
+data_access <- new.env(parent = emptyenv())
 download_cached <- function(url, dest_dir = cache_dir) {
   dest <- file.path(dest_dir, basename(url))
   if (!file.exists(dest)) {
     message("Downloading: ", basename(url))
-    utils::download.file(url, dest, mode = "wb", quiet = TRUE)
+    partial <- tempfile(tmpdir = dest_dir)
+    on.exit(unlink(partial), add = TRUE)
+    utils::download.file(url, partial, mode = "wb", quiet = TRUE)
+    if (!file.rename(partial, dest)) stop("Could not save ", url)
   }
+  data_access[[url]] <- data.frame(
+    url = url, file = basename(dest),
+    cached_file_date = as.character(as.Date(file.info(dest)$mtime,
+                                            tz = "Europe/Warsaw")),
+    md5 = unname(tools::md5sum(dest))
+  )
   dest
 }
 
@@ -87,6 +86,7 @@ read_semicolon_table <- function(path) {
 read_zip_first_table <- function(zip_path) {
   td <- tempfile("dwdzip")
   dir.create(td)
+  on.exit(unlink(td, recursive = TRUE), add = TRUE)
   utils::unzip(zip_path, exdir = td)
   files <- list.files(td, recursive = TRUE, full.names = TRUE)
   tab <- files[grepl("\\.(txt|csv|TXT|CSV)$", files)]
@@ -165,7 +165,8 @@ clim_meta <- clim_meta_raw %>%
     date_start = as.Date(as.character(date_start), "%Y%m%d"),
     date_end = as.Date(as.character(date_end), "%Y%m%d")
   ) %>%
-  filter(!is.na(lat), !is.na(lon), date_start <= as.Date("2011-01-01"), date_end >= as.Date("2020-12-31"))
+  filter(!is.na(lat), !is.na(lon),
+         date_start <= as.Date("1991-01-01"), date_end >= as.Date("2024-12-31"))
 
 extract_station_id_from_climate_zip <- function(x) sub(".*tageswerte_KL_([0-9]{5})_.*", "\\1", x)
 clim_available <- data.frame(
@@ -173,7 +174,9 @@ clim_available <- data.frame(
   station_id = extract_station_id_from_climate_zip(climate_zip_links),
   stringsAsFactors = FALSE
 )
-clim_meta <- clim_meta %>% inner_join(clim_available, by = "station_id")
+clim_meta <- clim_meta %>%
+  inner_join(clim_available, by = "station_id") %>%
+  arrange(station_id)
 
 read_climate_station <- function(station_row) {
   zip_file <- download_cached(paste0(CLIMATE_URL, station_row$climate_zip))
@@ -191,11 +194,8 @@ read_climate_station <- function(station_row) {
     station_id = station_row$station_id
   )
   out <- out %>% filter(!is.na(date), is.finite(tmin), is.finite(tmax), tmin > -80, tmax < 80)
-  if (exists("prepare_weather", mode = "function", inherits = TRUE)) {
-    prepare_weather(out)
-  } else {
-    ThermoPheno::prepare_weather(out)
-  }
+  if (anyDuplicated(out$date)) stop("Duplicate dates at climate station ", station_row$station_id)
+  ThermoPheno::prepare_weather(out)
 }
 
 message("Downloading DWD phenology station metadata...")
@@ -319,28 +319,13 @@ for (ii in seq_len(nrow(cfg))) {
   cc <- cfg[ii, ]
   message("Processing crop: ", cc$crop_name)
   
-  crop_files <- pheno_files %>% filter(grepl(cc$file_pattern, file, ignore.case = TRUE))
-  if (nrow(crop_files) == 0) {
-    warning("No DWD phenology file matched file_pattern for ", cc$crop_name, ". Pattern was: ", cc$file_pattern)
-    next
-  }
-  
-  # Prefer the most recent historical full file. If absent, use the recent rolling file.
-  crop_files <- crop_files %>% mutate(
-    priority = case_when(
-      source == "historical" & grepl("2024_hist", file) ~ 1L,
-      source == "historical" & grepl("2023_hist", file) ~ 2L,
-      source == "historical" ~ 3L,
-      TRUE ~ 4L
-    ),
-    size_proxy = nchar(file)
-  ) %>% arrange(priority, desc(size_proxy))
-  
-  chosen <- crop_files[1, ]
+  chosen <- pheno_files %>% filter(file == cc$phenology_file)
+  if (nrow(chosen) != 1L) stop("Could not locate DWD input for ", cc$crop_name)
   message("  Using DWD phenology file: ", chosen$file)
   pheno_path <- download_cached(paste0(chosen$base_url, chosen$file))
   pheno_raw <- read_dwd_table(pheno_path)
-  pheno <- join_phase_names(pheno_raw, phase_def)
+  pheno <- join_phase_names(pheno_raw, phase_def) %>%
+    filter(object_id_tmp == as.character(cc$object_id))
   
   # Save phase candidates for manual inspection.
   cand <- pheno %>%
@@ -353,13 +338,9 @@ for (ii in seq_len(nrow(cfg))) {
   # Filter out clearly bad quality flags when available: 5 doubtful, 8 incorrect.
   pheno <- pheno %>% filter(is.na(qb_tmp) | !(qb_tmp %in% c("5", "8")))
   
-  planting_obs <- pheno %>% filter(grepl(cc$planting_phase_regex, phase_text, ignore.case = TRUE), !is.na(date_obs))
-  harvest_obs  <- pheno %>% filter(grepl(cc$harvest_phase_regex,  phase_text, ignore.case = TRUE), !is.na(date_obs))
-  
-  if (nrow(planting_obs) == 0 || nrow(harvest_obs) == 0) {
-    warning("No planting or harvest phases matched for ", cc$crop_name, ". Check validation/results/phase_candidates.csv and edit validation/crop_config.csv.")
-    next
-  }
+  planting_obs <- pheno %>% filter(phase_id_tmp == "10", !is.na(date_obs))
+  harvest_obs  <- pheno %>% filter(phase_id_tmp == "24", !is.na(date_obs))
+  if (!nrow(planting_obs) || !nrow(harvest_obs)) stop("Missing DWD phases for ", cc$crop_name)
   
   # crop_year must be created with vectorized logic inside mutate().
   # For winter crops, autumn sowing belongs to the following harvest year.
@@ -406,22 +387,17 @@ for (ii in seq_len(nrow(cfg))) {
     by = c("station_id_pheno", "crop_year"),
     relationship = "one-to-one"
   ) %>%
-    filter(crop_year >= 1991, crop_year <= 2024) %>%
-    inner_join(pheno_sites_all, by = "station_id_pheno")
-  
-  if (nrow(obs) == 0) {
-    warning("No paired planting-harvest observations after station-coordinate join for ", cc$crop_name)
-    next
-  }
-  
-  station_counts <- obs %>% count(station_id_pheno, sort = TRUE) %>% filter(n >= 8)
-  obs <- obs %>% semi_join(station_counts, by = "station_id_pheno")
-  if (nrow(obs) == 0) {
-    warning("No station has at least 8 complete planting-harvest years for ", cc$crop_name)
-    next
-  }
-  
-  selected_sites <- obs %>% distinct(station_id_pheno, pheno_lat, pheno_lon) %>% head(25)
+    filter(crop_year %in% c(calib_years, valid_years),
+           observed_harvest_date >= observed_planting_date)
+
+  selected_sites <- obs %>%
+    filter(crop_year %in% calib_years) %>%
+    count(station_id_pheno, name = "calibration_calendar_years") %>%
+    filter(calibration_calendar_years >= MIN_OBSERVED_TT_YEARS) %>%
+    inner_join(pheno_sites_all, by = "station_id_pheno", relationship = "many-to-one") %>%
+    arrange(desc(calibration_calendar_years), station_id_pheno) %>%
+    head(25)
+  if (!nrow(selected_sites)) stop("No eligible calibration sites for ", cc$crop_name)
   
   for (ss in seq_len(nrow(selected_sites))) {
     site <- selected_sites[ss, ]
@@ -429,7 +405,10 @@ for (ii in seq_len(nrow(cfg))) {
     nearest <- clim_meta[which.min(d), , drop = FALSE]
     nearest$distance_km <- min(d, na.rm = TRUE)
     
-    all_matches[[paste(cc$crop_name, site$station_id_pheno, sep = "_")]] <- data.frame(
+    key <- paste(cc$crop_name, site$station_id_pheno, sep = "_")
+    obs_site <- obs %>% filter(station_id_pheno == site$station_id_pheno)
+    eval_calendar <- obs_site %>% filter(crop_year %in% valid_years)
+    all_matches[[key]] <- data.frame(
       crop_name = cc$crop_name,
       station_id_pheno = site$station_id_pheno,
       pheno_lat = site$pheno_lat,
@@ -438,7 +417,10 @@ for (ii in seq_len(nrow(cfg))) {
       climate_station_name = nearest$station_name,
       climate_lat = nearest$lat,
       climate_lon = nearest$lon,
-      distance_km = nearest$distance_km
+      distance_km = nearest$distance_km,
+      calibration_calendar_years = site$calibration_calendar_years,
+      held_out_calendar_years = nrow(eval_calendar),
+      evaluation_status = "weather_unavailable"
     )
     
     weather <- tryCatch(read_climate_station(nearest), error = function(e) {
@@ -447,91 +429,37 @@ for (ii in seq_len(nrow(cfg))) {
     })
     if (is.null(weather)) next
     
-    obs_site <- obs %>% filter(station_id_pheno == site$station_id_pheno)
-    calib_years <- 1991:2010
-    valid_years <- 2011:2024
     
-    obs_calib <- obs_site %>%
-      filter(crop_year %in% calib_years) %>%
-      transmute(
-        crop_year,
-        observed_planting_date,
-        observed_harvest_date
-      ) %>%
-      filter(
-        !is.na(observed_planting_date),
-        !is.na(observed_harvest_date),
-        observed_harvest_date >= observed_planting_date
-      )
-    
-    observed_tt_fun_available <- exists(
-      "estimate_required_tt_from_observed",
-      mode = "function",
-      inherits = TRUE
+    all_matches[[key]]$evaluation_status <- "insufficient_calibration"
+    req <- tryCatch(
+      ThermoPheno::estimate_required_tt_from_observed(
+        weather = weather,
+        observed_calendar = obs_site,
+        calibration_years = calib_years,
+        planting_col = "observed_planting_date",
+        harvest_col = "observed_harvest_date",
+        year_col = "crop_year",
+        t_base = cc$t_base,
+        t_opt = cc$t_opt,
+        t_max_cut = cc$t_max_cut,
+        tt_mode = cc$tt_mode,
+        summary_fun = OBSERVED_TT_SUMMARY_FUN,
+        min_weather_coverage = MIN_WEATHER_COVERAGE
+      ),
+      error = function(e) {
+        warning("Calibration failed for ", key, ": ", conditionMessage(e))
+        NULL
+      }
     )
-    
-    req <- NULL
-    
-    if (isTRUE(USE_OBSERVED_TT_CALIBRATION) &&
-        observed_tt_fun_available &&
-        nrow(obs_calib) >= MIN_OBSERVED_TT_YEARS) {
-      
-      req <- tryCatch(
-        estimate_required_tt_from_observed(
-          weather = weather,
-          observed_calendar = obs_calib,
-          calibration_years = calib_years,
-          planting_col = "observed_planting_date",
-          harvest_col = "observed_harvest_date",
-          year_col = "crop_year",
-          t_base = cc$t_base,
-          t_opt = cc$t_opt,
-          t_max_cut = cc$t_max_cut,
-          tt_mode = cc$tt_mode,
-          summary_fun = OBSERVED_TT_SUMMARY_FUN,
-          min_weather_coverage = MIN_WEATHER_COVERAGE
-        ),
-        error = function(e) {
-          warning(
-            "Observed TT calibration failed for ", cc$crop_name,
-            " / ", site$station_id_pheno,
-            ": ", conditionMessage(e),
-            ". Falling back to reference-date calibration."
-          )
-          NULL
-        }
-      )
-    }
-    
-    if (is.null(req)) {
-      req <- tryCatch(
-        ThermoPheno::estimate_required_tt(
-          weather = weather,
-          baseline_years = calib_years,
-          planting_mmdd = cc$baseline_planting_mmdd,
-          days_to_maturity = cc$days_to_maturity,
-          t_base = cc$t_base,
-          t_opt = cc$t_opt,
-          t_max_cut = cc$t_max_cut,
-          tt_mode = cc$tt_mode,
-          crop_type = cc$crop_type,
-          winter_dormancy_temp = cc$winter_dormancy_temp,
-          vernalization_required = isTRUE(cc$vernalization_required),
-          vernalization_days_required = cc$vernalization_days_required,
-          spring_regrowth_temp = cc$spring_regrowth_temp
-        ),
-        error = function(e) {
-          warning("TT calibration failed for ", cc$crop_name, " / ", site$station_id_pheno, ": ", conditionMessage(e))
-          NULL
-        }
-      )
-    }
-    
-    if (is.null(req)) next
-    
-    req_method <- if ("calibration_method" %in% names(req)) req$calibration_method else "reference_days"
-    req_n_valid <- if ("n_valid_years" %in% names(req)) req$n_valid_years else NA_integer_
-    
+    if (is.null(req) || req$n_valid_years < MIN_OBSERVED_TT_YEARS ||
+        !is.finite(req$required_tt) || req$required_tt <= 0) next
+
+    req_method <- req$calibration_method
+    req_n_valid <- req$n_valid_years
+    all_matches[[key]]$valid_calibration_years <- req_n_valid
+    all_matches[[key]]$evaluation_status <- "no_held_out_calendar"
+    if (!nrow(eval_calendar)) next
+
     if ("yearly_required_tt" %in% names(req) && is.data.frame(req$yearly_required_tt)) {
       all_required_tt[[paste(cc$crop_name, site$station_id_pheno, sep = "_")]] <-
         req$yearly_required_tt %>%
@@ -545,6 +473,7 @@ for (ii in seq_len(nrow(cfg))) {
         )
     }
     
+    all_matches[[key]]$evaluation_status <- "simulation_failed"
     sim <- tryCatch(
       ThermoPheno::run_simulation(
         weather = weather,
@@ -574,9 +503,29 @@ for (ii in seq_len(nrow(cfg))) {
     )
     if (is.null(sim)) next
     
-    pairs <- obs_site %>%
-      filter(crop_year %in% valid_years) %>%
-      inner_join(sim, by = c("crop_year" = "year")) %>%
+    # Score only simulations with nearly complete temperature forcing over
+    # the configured season. Retain every held-out station-year in the ledger.
+    window_start <- as.Date(paste(
+      eval_calendar$crop_year - as.integer(is_winter_crop),
+      cc$earliest_planting_mmdd, sep = "-"
+    ))
+    window_end <- as.Date(paste(eval_calendar$crop_year, cc$latest_harvest_mmdd, sep = "-"))
+    eval_calendar$weather_coverage <- vapply(seq_len(nrow(eval_calendar)), function(i) {
+      n_present <- sum(weather$date >= window_start[i] & weather$date <= window_end[i])
+      n_present / (as.integer(window_end[i] - window_start[i]) + 1L)
+    }, numeric(1))
+
+    pairs <- eval_calendar %>%
+      left_join(sim, by = c("crop_year" = "year"), relationship = "one-to-one") %>%
+      mutate(
+        status = case_when(
+          weather_coverage < MIN_WEATHER_COVERAGE ~ "insufficient_evaluation_weather",
+          is.na(status) ~ "no_simulation",
+          TRUE ~ status
+        ),
+        planting_date = if_else(weather_coverage >= MIN_WEATHER_COVERAGE, planting_date, as.Date(NA)),
+        harvest_date = if_else(weather_coverage >= MIN_WEATHER_COVERAGE, harvest_date, as.Date(NA))
+      ) %>%
       transmute(
         crop_name = cc$crop_name,
         crop_type = cc$crop_type,
@@ -585,6 +534,7 @@ for (ii in seq_len(nrow(cfg))) {
         climate_station_name = nearest$station_name,
         distance_km = nearest$distance_km,
         year = crop_year,
+        weather_coverage,
         observed_planting_date,
         simulated_planting_date = planting_date,
         planting_error_days = as.numeric(simulated_planting_date - observed_planting_date),
@@ -597,7 +547,12 @@ for (ii in seq_len(nrow(cfg))) {
         n_valid_tt_years = req_n_valid
       )
     
-    all_pairs[[paste(cc$crop_name, site$station_id_pheno, sep = "_")]] <- pairs
+    all_pairs[[key]] <- pairs
+    all_matches[[key]]$evaluation_status <- if (any(is.finite(pairs$planting_error_days))) {
+      "paired_planting_dates"
+    } else {
+      "no_paired_planting_dates"
+    }
   }
 }
 
@@ -606,6 +561,9 @@ readr::write_csv(phase_candidates, file.path(res_dir, "phase_candidates.csv"))
 
 matches <- if (length(all_matches)) bind_rows(all_matches) else data.frame()
 readr::write_csv(matches, file.path(res_dir, "nearest_climate_station_matches.csv"))
+inputs <- bind_rows(as.list(data_access)) %>% arrange(url)
+readr::write_csv(inputs, file.path(res_dir, "dwd_input_manifest.csv"))
+writeLines(capture.output(sessionInfo()), file.path(res_dir, "session_info.txt"))
 
 pairs <- if (length(all_pairs)) bind_rows(all_pairs) else data.frame()
 readr::write_csv(pairs, file.path(res_dir, "validation_pairs.csv"))
@@ -616,8 +574,7 @@ readr::write_csv(required_tt_table, file.path(res_dir, "required_tt_calibration_
 if (nrow(pairs) == 0) {
   writeLines(c(
     "No validation pairs were created.",
-    "This usually means that the phase regex in validation/crop_config.csv did not match the DWD phase-definition text.",
-    "Open validation/results/phase_candidates.csv and set planting_phase_regex / harvest_phase_regex to the relevant phase IDs or German phase labels."
+    "Inspect phase_candidates.csv, station matches and the run log."
   ), file.path(res_dir, "VALIDATION_SUMMARY.txt"))
   stop("No validation pairs were created. See validation/results/phase_candidates.csv and nearest_climate_station_matches.csv.")
 }
@@ -678,29 +635,46 @@ pairs_plot <- pairs %>%
   )
 readr::write_csv(pairs_plot, file.path(res_dir, "validation_pairs_with_doy.csv"))
 
-p1 <- ggplot(pairs_plot, aes(observed_planting_doy, simulated_planting_doy, colour = crop_name)) +
+p1 <- ggplot(filter(pairs_plot, is.finite(planting_error_days)),
+             aes(observed_planting_doy, simulated_planting_doy, colour = crop_name)) +
   geom_point(alpha = 0.65) +
   geom_abline(slope = 1, intercept = 0, linetype = 2) +
-  coord_equal(xlim = c(1, 365), ylim = c(1, 365)) +
+  coord_equal(xlim = c(1, 366), ylim = c(1, 366)) +
   labs(x = "Observed planting day of year", y = "Simulated planting day of year", colour = "Crop") +
   theme_minimal(base_size = 12)
 ggsave(file.path(res_dir, "validation_scatter_planting.png"), p1, width = 8, height = 6, dpi = 300)
 
-p2 <- ggplot(pairs_plot, aes(observed_harvest_doy, simulated_harvest_doy, colour = crop_name)) +
+p2 <- ggplot(filter(pairs_plot, is.finite(harvest_error_days)),
+             aes(observed_harvest_doy, simulated_harvest_doy, colour = crop_name)) +
   geom_point(alpha = 0.65) +
   geom_abline(slope = 1, intercept = 0, linetype = 2) +
-  coord_equal(xlim = c(1, 365), ylim = c(1, 365)) +
+  coord_equal(xlim = c(1, 366), ylim = c(1, 366)) +
   labs(x = "Observed harvest day of year", y = "Simulated harvest day of year", colour = "Crop") +
   theme_minimal(base_size = 12)
 ggsave(file.path(res_dir, "validation_scatter_harvest.png"), p2, width = 8, height = 6, dpi = 300)
 
+errors <- pairs %>%
+  select(crop_name, planting_error_days, harvest_error_days) %>%
+  pivot_longer(ends_with("_error_days"), names_to = "phase", values_to = "error_days") %>%
+  filter(is.finite(error_days)) %>%
+  mutate(phase = if_else(phase == "planting_error_days", "Planting", "Harvest"))
+p3 <- ggplot(errors, aes(error_days)) +
+  geom_histogram(binwidth = 5, boundary = 0, fill = "#146C94") +
+  geom_vline(xintercept = 0, linetype = 2) +
+  facet_grid(crop_name ~ phase) +
+  labs(x = "Simulated minus observed date (days)", y = "Station-years") +
+  theme_minimal(base_size = 12)
+ggsave(file.path(res_dir, "validation_error_distribution.png"), p3, width = 9, height = 7, dpi = 150)
+
 summary_lines <- c(
   "ThermoPheno DWD validation summary",
-  paste("Run date:", Sys.Date()),
+  paste("Run date:", format(Sys.time(), "%Y-%m-%d", tz = "Europe/Warsaw")),
   paste("Validation pairs:", nrow(pairs)),
   paste("Phenology stations:", dplyr::n_distinct(pairs$station_id_pheno)),
   paste("Climate stations:", dplyr::n_distinct(pairs$climate_station_id)),
-  paste("Observed TT calibration enabled:", USE_OBSERVED_TT_CALIBRATION),
+  paste("ThermoPheno version:", packageVersion("ThermoPheno")),
+  paste("Calibration harvest years:", min(calib_years), "to", max(calib_years)),
+  paste("Evaluation harvest years:", min(valid_years), "to", max(valid_years)),
   paste("Minimum observed TT calibration years:", MIN_OBSERVED_TT_YEARS),
   paste("Minimum weather coverage for observed TT:", MIN_WEATHER_COVERAGE),
   "",
