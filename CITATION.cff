@@ -6,11 +6,33 @@ authors:
   - family-names: "Eini"
     given-names: "Mohammad Reza"
     orcid: "https://orcid.org/0000-0002-3323-5952"
-    affiliation: "Faculty of Civil Engineering, Environmental Engineering and Architecture, Warsaw University of Life Sciences - SGGW"
-version: "0.1.0"
-date-released: "2026-10-24"
+    affiliation: "Warsaw University of Life Sciences – SGGW"
+version: "0.1.1"
 repository-code: "https://github.com/MR-Eini/ThermoPheno"
-url: "https://github.com/MR-Eini/ThermoPheno"
+url: "https://mr-eini.github.io/ThermoPheno/"
 license: MIT
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23619166"
+    description: "Zenodo concept DOI for all versions"
 
-doi: "10.5281/zenodo.23619167"
+keywords:
+  - crop phenology
+  - thermal time
+  - growing degree days
+  - climate change
+  - R
+  - Shiny
+references:
+  - type: article
+    title: "From fixed calendars to dynamic triggers: climate-responsive field management with SWAT+ decision tables"
+    authors:
+      - family-names: "Eini"
+        given-names: "Mohammad Reza"
+      - family-names: "Müller"
+        given-names: "Birgit"
+      - family-names: "Strauch"
+        given-names: "Michael"
+    year: 2026
+    journal: "Journal of Hydrology"
+    doi: "10.1016/j.jhydrol.2026.135767"

@@ -6,6 +6,5 @@
 *.zip
 .Rcheck/
 docs/
-pkgdown/
 validation/cache/
 validation/results/

@@ -1,3 +1,10 @@
+# ThermoPheno 0.1.1
+
+- Documented the DWD validation workflow and its held-out evaluation.
+- Added an attributed daily weather example from a DWD station.
+- Extended tests for thermal-time boundaries, planting windows, input handling
+  and simulation outcomes.
+
 # ThermoPheno 0.1.0
 
 - Initial formal R-package structure.

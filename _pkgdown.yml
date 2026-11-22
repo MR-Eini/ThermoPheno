@@ -20,6 +20,13 @@ home:
   title: ThermoPheno
   description: Thermal-time crop phenology simulation with a Shiny app.
 
+articles:
+  - title: Articles
+    navbar: ~
+    contents:
+      - ThermoPheno-introduction
+      - articles/dwd-validation
+
 reference:
   - title: Core model functions
     contents:
