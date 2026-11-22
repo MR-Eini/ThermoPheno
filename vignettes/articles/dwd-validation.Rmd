@@ -52,6 +52,14 @@ between observed and simulated days of year where both vary, a measure of
 association. Harvest metrics include forced harvests. Station-years can share
 climate stations, so the paired counts do not represent independent tests.
 
+The sugar beet planting RMSE is sensitive to one anomalous DWD record. At
+station 11908 in 2015, the reported sowing date (19 September) falls after the
+reported emergence date (11 April). DWD flagged the sowing date as having no
+objections. The main results retain this case under the stated quality filter.
+Removing that record in a post hoc sensitivity check changes sugar beet
+planting MAE from 7.36 to 6.34 days and RMSE from 15.83 to 7.90 days
+(167 paired dates).
+
 <img src="../validation/validation_scatter_planting.png" alt="Simulated and observed planting day of year, by crop, with a dashed 1:1 line">
 
 <img src="../validation/validation_scatter_harvest.png" alt="Simulated and observed harvest day of year, by crop, with a dashed 1:1 line">
