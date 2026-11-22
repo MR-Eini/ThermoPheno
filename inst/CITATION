@@ -2,7 +2,8 @@ citHeader("To cite ThermoPheno in publications use:")
 
 version <- as.character(meta$Version)
 doi <- unname(c("0.1.0" = "10.5281/zenodo.23619167",
-                "0.1.1" = "10.5281/zenodo.24441786")[version])
+                "0.1.1" = "10.5281/zenodo.24441786",
+                "0.2.0" = "10.5281/zenodo.24442888")[version])
 archive <- "https://doi.org/10.5281/zenodo.23619166"
 
 bibentry(

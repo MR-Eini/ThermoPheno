@@ -3,8 +3,9 @@
 Prepared 22 November 2026. Covers the calibration/simulation thermal-time
 mismatch, the fix, the rerun of the DWD validation and its comparison with 0.1.1.
 Every number below comes from a run whose script and log are in the repository
-(paths given). **Status: the work is in the working tree of `main`, not
-committed, not pushed, no pull request and no release yet** (see section 7).
+(paths given). **Status: committed on `main` (no pull request, by your
+decision), CI green, released as `v0.2.0` and archived on Zenodo** (see
+sections 6 and 7).
 
 ## 1. Diagnosis
 
@@ -198,23 +199,32 @@ R 4.5.2: **0 errors, 0 warnings, 2 NOTEs** (`validation/diagnostics/rcmdcheck_v0
   via `.Rbuildignore`.
 
 Pandoc came from the local RStudio installation (`RSTUDIO_PANDOC`).
-**GitHub CI has not run**: nothing has been pushed. pkgdown site built locally
-without errors; all 27 local links in the validation article resolve.
+pkgdown site built locally without errors; all 27 local links in the
+validation article resolve.
+
+GitHub CI on the release commit `14919f9` (pushed to `main` on 22 November 2026):
+R-CMD-check (ubuntu, windows, macos, release R) **success**
+(https://github.com/MR-Eini/ThermoPheno/actions/runs/45031316042) and pkgdown
+build and deploy **success**
+(https://github.com/MR-Eini/ThermoPheno/actions/runs/45031316058). The commit was
+first pushed as `2dd474e` and reworded once, before any tag or release, to
+remove a co-author trailer; file contents are identical.
 
 ## 7. Release details
 
-Not done; waiting for your review of the changes on `main` (no PR, by your decision).
-
-- Planned tag: `v0.2.0`, published as a GitHub release, which creates a new
-  version under concept DOI **10.5281/zenodo.23619166**. `.zenodo.json` already
-  says version 0.2.0 (MIT, same creator, description and related identifiers).
-- Version DOI for 0.2.0: not yet assigned.
-- After Zenodo assigns it: follow-up commit for README citation,
-  `CITATION.cff` (version, DOI, `date-released`), `inst/CITATION` DOI map, and
-  rebuild of the site. Until then `inst/CITATION` falls back to the concept DOI
-  for 0.2.0; README and `CITATION.cff` still cite 0.1.1.
-- Live article: https://mr-eini.github.io/ThermoPheno/articles/dwd-validation.html
-  (updates after merge). Archived 0.1.1 results (after merge):
+- Release: https://github.com/MR-Eini/ThermoPheno/releases/tag/v0.2.0
+  (tag `v0.2.0` on `14919f9`, published 22 November 2026, marked Latest).
+- **Version DOI: 10.5281/zenodo.24442888** (https://doi.org/10.5281/zenodo.24442888),
+  under concept DOI **10.5281/zenodo.23619166**. The Zenodo record shows version
+  0.2.0, licence MIT, creator Eini, Mohammad Reza (SGGW, ORCID
+  0000-0002-3323-5952), the `.zenodo.json` description, and related identifiers
+  (GitHub repository, isSupplementTo; 10.1016/j.jhydrol.2026.135767,
+  references). One Zenodo record set; no separate record was created.
+- Follow-up commit after the DOI: README citation, `CITATION.cff` (version,
+  DOI) and the `inst/CITATION` DOI map now cite 10.5281/zenodo.24442888. The
+  tagged package itself cites the concept DOI.
+- Live article: https://mr-eini.github.io/ThermoPheno/articles/dwd-validation.html.
+  Archived 0.1.1 results:
   https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1
   and on the site under `validation/archive/v0.1.1/`. 0.1.1 article source:
   https://github.com/MR-Eini/ThermoPheno/blob/v0.1.1/vignettes/articles/dwd-validation.Rmd
@@ -240,9 +250,8 @@ Not done; waiting for your review of the changes on `main` (no PR, by your decis
 5. **Vernalization temperature window** is not in `crop_config.csv`; the defaults
    (0–10 °C) are used on both sides. You may want it recorded explicitly.
 6. **Branch.** You decided to keep the changes on `main` without a separate
-   branch or pull request. Review of the working-tree changes therefore stands
-   in for PR approval before the `v0.2.0` release. CI runs once the commit is
-   pushed to `main`.
+   branch or pull request, and approved the release directly. There is
+   therefore no PR record of the review for this version.
 
 ## Environment notes
 
