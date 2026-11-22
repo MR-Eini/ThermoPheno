@@ -262,7 +262,7 @@ pkgdown::build_site()
 
 If you use ThermoPheno in a report, repository, or paper, cite it as:
 
-> Eini, M. R. (2026). **ThermoPheno: Thermal-Time-Based Crop Phenology Simulation** (Version 0.1.1) [Computer software].
+> Eini, M. R. (2026). **ThermoPheno: Thermal-Time-Based Crop Phenology Simulation** (Version 0.1.1) [Computer software]. Zenodo. [10.5281/zenodo.24441786](https://doi.org/10.5281/zenodo.24441786)
 
 Use the [Zenodo archive](https://doi.org/10.5281/zenodo.23619166) to find the version-specific DOI.
 
