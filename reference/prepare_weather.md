@@ -17,3 +17,10 @@ prepare_weather(df)
 ## Value
 
 A data frame sorted by date.
+
+## Details
+
+The bundled files ending in `_dummy_data.csv` contain synthetic weather
+for demonstrations. See
+`system.file("extdata", "DWD_DATA_LICENSE.md", package = "ThermoPheno")`
+for the source and license of the separate DWD example.

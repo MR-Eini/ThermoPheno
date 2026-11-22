@@ -1,6 +1,11 @@
 # ThermoPheno
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23619166.svg)](https://doi.org/10.5281/zenodo.23619166)
+[![R-CMD-check](https://github.com/MR-Eini/ThermoPheno/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MR-Eini/ThermoPheno/actions/workflows/R-CMD-check.yaml)
+[![MIT
+license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/MR-Eini/ThermoPheno/blob/main/LICENSE)
+[![Version
+0.1.1](https://img.shields.io/badge/version-0.1.1-blue.svg)](https://github.com/MR-Eini/ThermoPheno/releases)
 
 Archived release 0.1.0:
 [10.5281/zenodo.23619167](https://doi.org/10.5281/zenodo.23619167).
@@ -88,7 +93,7 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
 
-remotes::install_github("MR-Eini/ThermoPheno", dependencies = TRUE)
+remotes::install_github("MR-Eini/ThermoPheno", ref = "v0.1.1", dependencies = TRUE)
 ```
 
 ### Install from a local source folder
@@ -102,7 +107,7 @@ remotes::install_local("ThermoPheno", dependencies = TRUE)
 
 ``` r
 
-install.packages("ThermoPheno_0.1.0.tar.gz", repos = NULL, type = "source")
+install.packages("ThermoPheno_0.1.1.tar.gz", repos = NULL, type = "source")
 ```
 
 ## Launch the Shiny app
@@ -122,12 +127,18 @@ ThermoPheno()
 
 ## Example data
 
-Bundled example files are available in `inst/extdata`:
+The two `*_dummy_data.csv` files contain synthetic temperatures for
+demonstrating the workflow. A separate observed example contains daily
+minimum and maximum temperatures from DWD station 04709
+(Simmern-Wahlbach) for 2005. The source and license are included in
+`inst/extdata/DWD_DATA_LICENSE.md`.
 
 ``` r
 
 system.file("extdata", "Germany_historical_1981_2010_dummy_data.csv", package = "ThermoPheno")
 system.file("extdata", "Germany_10_scenarios_2071_2100_dummy_data.csv", package = "ThermoPheno")
+dwd <- system.file("extdata", "dwd_simmern_wahlbach_2005.csv", package = "ThermoPheno")
+weather <- prepare_weather(read.csv(dwd, colClasses = c(station = "character")))
 ```
 
 ## Input data format
@@ -285,8 +296,16 @@ pkgdown::build_site()
 If you use ThermoPheno in a report, repository, or paper, cite it as:
 
 > Eini, M. R. (2026). **ThermoPheno: Thermal-Time-Based Crop Phenology
-> Simulation** (Version 0.1.0) \[Computer software\]. Zenodo.
-> <https://doi.org/10.5281/zenodo.23619167>
+> Simulation** (Version 0.1.1) \[Computer software\].
+
+Use the [Zenodo archive](https://doi.org/10.5281/zenodo.23619166) to
+find the version-specific DOI.
+
+## Publications and applications
+
+Eini, Müller and Strauch (2026), *Journal of Hydrology*, provides
+context for thermal-time scheduling with SWAT+.
+[DOI](https://doi.org/10.1016/j.jhydrol.2026.135767)
 
 ## License
 

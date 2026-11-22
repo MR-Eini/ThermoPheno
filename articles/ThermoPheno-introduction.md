@@ -1,5 +1,19 @@
 # ThermoPheno introduction
 
+The bundled `*_dummy_data.csv` files contain synthetic weather for
+demonstrating the workflow. For an observed weather example, use the
+2005 daily temperatures from DWD station 04709 (Simmern-Wahlbach).
+Source: Deutscher Wetterdienst (DWD), Climate Data Center, [CC BY
+4.0](https://creativecommons.org/licenses/by/4.0/). The extract selects
+one year and renames the date and temperature fields.
+
+``` r
+
+library(ThermoPheno)
+path <- system.file("extdata", "dwd_simmern_wahlbach_2005.csv", package = "ThermoPheno")
+head(prepare_weather(read.csv(path, colClasses = c(station = "character"))))
+```
+
 ``` r
 
 library(ThermoPheno)
