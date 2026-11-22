@@ -36,7 +36,7 @@
 
 <div id="thermopheno-020--update-report" class="section level1">
 
-<p>Prepared 22 November 2026. Covers the calibration/simulation thermal-time mismatch, the fix, the rerun of the DWD validation and its comparison with 0.1.1. Every number below comes from a run whose script and log are in the repository (paths given). <strong>Status: the work is in the working tree of <code>main</code>, not committed, not pushed, no pull request and no release yet</strong> (see section 7).</p>
+<p>Prepared 22 November 2026. Covers the calibration/simulation thermal-time mismatch, the fix, the rerun of the DWD validation and its comparison with 0.1.1. Every number below comes from a run whose script and log are in the repository (paths given). <strong>Status: committed on <code>main</code> (no pull request, by your decision), CI green, released as <code>v0.2.0</code> and archived on Zenodo</strong> (see sections 6 and 7).</p>
 <div class="section level2">
 <h2 id="id_1-diagnosis">1. Diagnosis<a class="anchor" aria-label="anchor" href="#id_1-diagnosis"></a></h2>
 <p>Script: <code>validation/diagnose_tt_consistency.R</code> (calibration harvest years 1991–2010 only; it re-uses the input/parsing code of the validation script unchanged and the same station-selection rule). Run against the installed <code>v0.1.1</code> tag. Log and tables: <code>validation/diagnostics/v0.1.1/</code>.</p>
@@ -227,15 +227,16 @@
 <p><code>rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"))</code> on Windows, R 4.5.2: <strong>0 errors, 0 warnings, 2 NOTEs</strong> (<code>validation/diagnostics/rcmdcheck_v0.2.0.log</code>).</p>
 <ul><li>“CRAN incoming feasibility”: New submission; tarball 11.9 MB. Pre-existing: the 0.1.1 tarball is 11,926,868 bytes vs 11,933,113 for 0.2.0. Mostly bundled example climate data (6.9 MB scenario CSV).</li>
 <li>“Non-standard top-level files”: <code>RUN_CHECKS.R</code>, <code>SOURCE_PACKAGE_NOTES.md</code>, <code>scripts</code>, <code>validation</code>. Pre-existing. The new diagnostic files are excluded via <code>.Rbuildignore</code>.</li>
-</ul><p>Pandoc came from the local RStudio installation (<code>RSTUDIO_PANDOC</code>). <strong>GitHub CI has not run</strong>: nothing has been pushed. pkgdown site built locally without errors; all 27 local links in the validation article resolve.</p>
+</ul><p>Pandoc came from the local RStudio installation (<code>RSTUDIO_PANDOC</code>). pkgdown site built locally without errors; all 27 local links in the validation article resolve.</p>
+<p>GitHub CI on the release commit <code>14919f9</code> (pushed to <code>main</code> on 22 November 2026): R-CMD-check (ubuntu, windows, macos, release R) <strong>success</strong> (<a href="https://github.com/MR-Eini/ThermoPheno/actions/runs/45031316042" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/actions/runs/45031316042</a>) and pkgdown build and deploy <strong>success</strong> (<a href="https://github.com/MR-Eini/ThermoPheno/actions/runs/45031316058" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/actions/runs/45031316058</a>). The commit was first pushed as <code>2dd474e</code> and reworded once, before any tag or release, to remove a co-author trailer; file contents are identical.</p>
 </div>
 <div class="section level2">
 <h2 id="id_7-release-details">7. Release details<a class="anchor" aria-label="anchor" href="#id_7-release-details"></a></h2>
-<p>Not done; waiting for your review of the changes on <code>main</code> (no PR, by your decision).</p>
-<ul><li>Planned tag: <code>v0.2.0</code>, published as a GitHub release, which creates a new version under concept DOI <strong>10.5281/zenodo.23619166</strong>. <code>.zenodo.json</code> already says version 0.2.0 (MIT, same creator, description and related identifiers).</li>
-<li>Version DOI for 0.2.0: not yet assigned.</li>
-<li>After Zenodo assigns it: follow-up commit for README citation, <code>CITATION.cff</code> (version, DOI, <code>date-released</code>), <code>inst/CITATION</code> DOI map, and rebuild of the site. Until then <code>inst/CITATION</code> falls back to the concept DOI for 0.2.0; README and <code>CITATION.cff</code> still cite 0.1.1.</li>
-<li>Live article: <a href="https://mr-eini.github.io/ThermoPheno/articles/dwd-validation.html" class="uri">https://mr-eini.github.io/ThermoPheno/articles/dwd-validation.html</a> (updates after merge). Archived 0.1.1 results (after merge): <a href="https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1</a> and on the site under <code>validation/archive/v0.1.1/</code>. 0.1.1 article source: <a href="https://github.com/MR-Eini/ThermoPheno/blob/v0.1.1/vignettes/articles/dwd-validation.Rmd" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/blob/v0.1.1/vignettes/articles/dwd-validation.Rmd</a>
+<ul><li>Release: <a href="https://github.com/MR-Eini/ThermoPheno/releases/tag/v0.2.0" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/releases/tag/v0.2.0</a> (tag <code>v0.2.0</code> on <code>14919f9</code>, published 22 November 2026, marked Latest).</li>
+<li>
+<strong>Version DOI: 10.5281/zenodo.24442888</strong> (<a href="https://doi.org/10.5281/zenodo.24442888" class="external-link uri">https://doi.org/10.5281/zenodo.24442888</a>), under concept DOI <strong>10.5281/zenodo.23619166</strong>. The Zenodo record shows version 0.2.0, licence MIT, creator Eini, Mohammad Reza (SGGW, ORCID 0000-0002-3323-5952), the <code>.zenodo.json</code> description, and related identifiers (GitHub repository, isSupplementTo; 10.1016/j.jhydrol.2026.135767, references). One Zenodo record set; no separate record was created.</li>
+<li>Follow-up commit after the DOI: README citation, <code>CITATION.cff</code> (version, DOI) and the <code>inst/CITATION</code> DOI map now cite 10.5281/zenodo.24442888. The tagged package itself cites the concept DOI.</li>
+<li>Live article: <a href="https://mr-eini.github.io/ThermoPheno/articles/dwd-validation.html" class="uri">https://mr-eini.github.io/ThermoPheno/articles/dwd-validation.html</a>. Archived 0.1.1 results: <a href="https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1</a> and on the site under <code>validation/archive/v0.1.1/</code>. 0.1.1 article source: <a href="https://github.com/MR-Eini/ThermoPheno/blob/v0.1.1/vignettes/articles/dwd-validation.Rmd" class="external-link uri">https://github.com/MR-Eini/ThermoPheno/blob/v0.1.1/vignettes/articles/dwd-validation.Rmd</a>
 </li>
 </ul></div>
 <div class="section level2">
@@ -251,7 +252,7 @@
 <li>
 <strong>Vernalization temperature window</strong> is not in <code>crop_config.csv</code>; the defaults (0–10 °C) are used on both sides. You may want it recorded explicitly.</li>
 <li>
-<strong>Branch.</strong> You decided to keep the changes on <code>main</code> without a separate branch or pull request. Review of the working-tree changes therefore stands in for PR approval before the <code>v0.2.0</code> release. CI runs once the commit is pushed to <code>main</code>.</li>
+<strong>Branch.</strong> You decided to keep the changes on <code>main</code> without a separate branch or pull request, and approved the release directly. There is therefore no PR record of the review for this version.</li>
 </ol></div>
 <div class="section level2">
 <h2 id="environment-notes">Environment notes<a class="anchor" aria-label="anchor" href="#environment-notes"></a></h2>
