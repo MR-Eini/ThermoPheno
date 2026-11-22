@@ -1,0 +1,57 @@
+Warning messages:
+1: package 'readr' was built under R version 4.5.3 
+2: package 'tidyr' was built under R version 4.5.3 
+Warning message:
+The following named parsers don't match the column names: station_id_pheno, climate_station_id 
+Warning message:
+The following named parsers don't match the column names: station_id_pheno, climate_station_id 
+Warning message:
+The following named parsers don't match the column names: station_id_pheno, climate_station_id 
+Warning message:
+The following named parsers don't match the column names: station_id_pheno, climate_station_id 
+Metrics
+     crop_name    phase n_v011 bias_v011 mae_v011 rmse_v011 r2_v011 n_new bias_new mae_new rmse_new  r2_new
+1        Maize planting    152    0.2895    7.171     9.575 0.09651   152   0.2895   7.171    9.575 0.09651
+2        Maize  harvest    152   -7.3421   15.329    19.584 0.25135   152  -7.3355  15.322   19.576 0.25153
+3   Sugar beet planting    168   -0.5952    7.357    15.830 0.05284   168  -0.5952   7.357   15.830 0.05284
+4   Sugar beet  harvest    168  -15.9167   19.369    24.486 0.05480   168 -15.9167  19.369   24.486 0.05480
+5 Winter wheat planting    217   -8.7604   10.392    13.492 0.00231   217  -8.7604  10.392   13.492 0.00231
+6 Winter wheat  harvest    209   13.3349   14.522    17.177 0.09627   217  -1.7926   9.452   11.118 0.26907
+
+Held-out outcome status counts
+     crop_name                          status n_v011 n_new
+1        Maize         forced_harvest_immature      8     8
+2        Maize                          mature    144   144
+3   Sugar beet insufficient_evaluation_weather      8     8
+4   Sugar beet                          mature    168   168
+5 Winter wheat                failed_to_mature      8     0
+6 Winter wheat         forced_harvest_immature    174    22
+7 Winter wheat insufficient_evaluation_weather      2     2
+8 Winter wheat                          mature     35   195
+
+Same held-out station-year cases in both runs: TRUE 
+Simulated planting dates identical in both runs: TRUE 
+Station matching identical: TRUE 
+
+Attempted-case outcomes
+     crop_name        evaluation_status n_v011 n_new
+1        Maize insufficient_calibration      5     5
+2        Maize     no_held_out_calendar      1     1
+3        Maize    paired_planting_dates     19    19
+4   Sugar beet insufficient_calibration      1     1
+5   Sugar beet     no_held_out_calendar      3     3
+6   Sugar beet    paired_planting_dates     21    21
+7 Winter wheat insufficient_calibration      3     3
+8 Winter wheat     no_held_out_calendar      2     2
+9 Winter wheat    paired_planting_dates     20    20
+
+Input checksums
+
+identical 
+       48 
+
+Calibrated requirement by crop
+     crop_name n_stations median_required_tt_v011 median_required_tt_new min_ratio median_ratio max_ratio
+1        Maize         19                  1188.2                 1188.2   1.00000       1.0000   1.00000
+2   Sugar beet         21                  2277.1                 2277.1   1.00000       1.0000   1.00000
+3 Winter wheat         20                  2378.7                 1975.8   0.77876       0.8358   0.87575

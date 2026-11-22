@@ -1,0 +1,93 @@
+Reading validation crop configuration...
+Discovering DWD phenology files...
+Discovering DWD climate files...
+Downloading climate station metadata...
+Downloading: KL_Tageswerte_Beschreibung_Stationen.txt
+Downloading DWD phenology station metadata...
+Downloading: PH_Beschreibung_Phaenologie_Stationen_Jahresmelder.txt
+New names:
+• `` -> `...13`
+Downloading DWD phase-definition table...
+Downloading: PH_Beschreibung_Phasendefinition_Jahresmelder_Landwirtschaft_Kulturpflanze.txt
+New names:
+• `` -> `...9`
+Warning messages:
+1: package 'readr' was built under R version 4.5.3 
+2: package 'ggplot2' was built under R version 4.5.3 
+3: package 'tidyr' was built under R version 4.5.3 
+ThermoPheno version under diagnosis: 0.1.1
+Calibration years only: 1991-2010
+Diagnosing crop: Maize
+Downloading: PH_Jahresmelder_Landwirtschaft_Kulturpflanze_Mais_1936_2024_hist.txt
+New names:
+• `` -> `...10`
+Downloading: tageswerte_KL_00766_19650101_20251231_hist.zip
+Downloading: tageswerte_KL_04508_19530101_20251231_hist.zip
+Downloading: tageswerte_KL_03904_19650101_20251231_hist.zip
+Downloading: tageswerte_KL_03340_19380101_20220430_hist.zip
+Downloading: tageswerte_KL_04709_19790401_20251231_hist.zip
+Downloading: tageswerte_KL_02486_19010101_20251231_hist.zip
+Downloading: tageswerte_KL_00150_19510101_20251231_hist.zip
+Downloading: tageswerte_KL_03545_19700101_20251231_hist.zip
+Downloading: tageswerte_KL_01072_19520101_20251231_hist.zip
+Downloading: tageswerte_KL_03939_19500101_20251231_hist.zip
+Downloading: tageswerte_KL_01011_19901011_20251231_hist.zip
+Downloading: tageswerte_KL_04160_19701222_20251231_hist.zip
+Downloading: tageswerte_KL_04880_19841201_20251231_hist.zip
+Downloading: tageswerte_KL_03925_19890406_20251231_hist.zip
+Downloading: tageswerte_KL_02814_19490101_20251231_hist.zip
+Downloading: tageswerte_KL_05275_19851001_20251231_hist.zip
+Downloading: tageswerte_KL_05327_19810714_20251231_hist.zip
+Downloading: tageswerte_KL_00755_19350101_20251231_hist.zip
+Downloading: tageswerte_KL_03257_19470101_20251231_hist.zip
+Downloading: tageswerte_KL_04177_19480101_20251231_hist.zip
+Downloading: tageswerte_KL_05906_17810101_20251231_hist.zip
+Diagnosing crop: Sugar beet
+Downloading: PH_Jahresmelder_Landwirtschaft_Kulturpflanze_Zucker-Ruebe_1925_2024_hist.txt
+New names:
+• `` -> `...10`
+Downloading: tageswerte_KL_04301_19470101_20251231_hist.zip
+Downloading: tageswerte_KL_03137_19480101_20251231_hist.zip
+Downloading: tageswerte_KL_04349_19871101_20251231_hist.zip
+Downloading: tageswerte_KL_00330_19370101_20251231_hist.zip
+Downloading: tageswerte_KL_03271_19410101_20251231_hist.zip
+Downloading: tageswerte_KL_03147_19530101_20251231_hist.zip
+Downloading: tageswerte_KL_02700_19610101_20251231_hist.zip
+Downloading: tageswerte_KL_01107_19630101_20251231_hist.zip
+Downloading: tageswerte_KL_02600_19821101_20251231_hist.zip
+Downloading: tageswerte_KL_05705_19470101_20251231_hist.zip
+Downloading: tageswerte_KL_00191_19860401_20251231_hist.zip
+Downloading: tageswerte_KL_00232_19470101_20251231_hist.zip
+Downloading: tageswerte_KL_00161_19801201_20251231_hist.zip
+Downloading: tageswerte_KL_00662_19610101_20251231_hist.zip
+Downloading: tageswerte_KL_05692_19360101_20251231_hist.zip
+Diagnosing crop: Winter wheat
+Downloading: PH_Jahresmelder_Landwirtschaft_Kulturpflanze_Winterweizen_1925_2024_hist.txt
+New names:
+• `` -> `...10`
+Downloading: tageswerte_KL_02362_19821001_20251231_hist.zip
+Downloading: tageswerte_KL_00535_19470101_20251231_hist.zip
+Downloading: tageswerte_KL_02385_19740401_20251231_hist.zip
+Downloading: tageswerte_KL_05426_19530101_20251231_hist.zip
+Downloading: tageswerte_KL_01197_19410101_20251231_hist.zip
+Downloading: tageswerte_KL_03621_19470101_20251231_hist.zip
+ThermoPheno version: 0.1.1 
+Calibration years: 1991 - 2010 
+
+(b)/(a) by crop
+     crop_name n_seasons n_excluded ratio_min ratio_p10 ratio_median ratio_mean ratio_p90 ratio_max share_ratio_below_0_99 median_raw_minus_sim_tt
+1        Maize       279          1 1.0000000 1.0000000    1.0000000  1.0000000 1.0000000 1.0000000                      0                     0.0
+2   Sugar beet       445          0 1.0000000 1.0000000    1.0000000  1.0000000 1.0000000 1.0000000                      0                     0.0
+3 Winter wheat       323          1 0.6846571 0.7728767    0.8439896  0.8417115 0.9018305 0.9297185                      1                   360.8
+
+Reachable thermal time before the harvest deadline
+     crop_name n_station_years n_stations n_not_planted share_reach_below_raw_requirement share_reach_below_sim_requirement median_reach_tt median_raw_requirement median_sim_requirement
+1        Maize             293         20             9                        0.10921502                        0.10921502        1365.260               1190.100                1190.10
+2   Sugar beet             456         24             5                        0.03947368                        0.03947368        2591.381               2296.960                2296.96
+3 Winter wheat             343         22             6                        0.85131195                        0.23906706        2128.475               2359.775                1983.95
+
+Observed calibration-period harvest dates vs configured deadline
+     crop_name latest_harvest_mmdd n_calibration_harvests share_observed_after_deadline harvest_p50 harvest_p90 harvest_p95 harvest_max
+1        Maize               11-15                    500                   0.000000000       09-23       10-11       10-15       11-06
+2   Sugar beet               11-30                    499                   0.002004008       10-05       10-24       10-30       12-10
+3 Winter wheat               08-15                    500                   0.110000000       08-04       08-16       08-20       09-04

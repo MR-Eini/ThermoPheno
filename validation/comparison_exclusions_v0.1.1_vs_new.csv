@@ -1,0 +1,10 @@
+crop_name,evaluation_status,n_v011,n_new
+Maize,insufficient_calibration,5,5
+Maize,no_held_out_calendar,1,1
+Maize,paired_planting_dates,19,19
+Sugar beet,insufficient_calibration,1,1
+Sugar beet,no_held_out_calendar,3,3
+Sugar beet,paired_planting_dates,21,21
+Winter wheat,insufficient_calibration,3,3
+Winter wheat,no_held_out_calendar,2,2
+Winter wheat,paired_planting_dates,20,20

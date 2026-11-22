@@ -1,6 +1,9 @@
 # Estimate required thermal time from a reference baseline period
 
-Estimate required thermal time from a reference baseline period
+Thermal time is accumulated from the reference planting date over
+`days_to_maturity` days with the same code and rules as
+[`simulate_one_year()`](https://mr-eini.github.io/ThermoPheno/reference/simulate_one_year.md),
+including the vernalization and dormancy rules for winter crops.
 
 ## Usage
 

@@ -5,7 +5,7 @@
 [![MIT
 license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/MR-Eini/ThermoPheno/blob/main/LICENSE)
 [![Version
-0.1.1](https://img.shields.io/badge/version-0.1.1-blue.svg)](https://github.com/MR-Eini/ThermoPheno/releases)
+0.2.0](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/MR-Eini/ThermoPheno/releases)
 
 Archived release 0.1.0:
 [10.5281/zenodo.23619167](https://doi.org/10.5281/zenodo.23619167).
@@ -93,7 +93,7 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
 
-remotes::install_github("MR-Eini/ThermoPheno", ref = "v0.1.1", dependencies = TRUE)
+remotes::install_github("MR-Eini/ThermoPheno", ref = "v0.2.0", dependencies = TRUE)
 ```
 
 ### Install from a local source folder
@@ -107,7 +107,7 @@ remotes::install_local("ThermoPheno", dependencies = TRUE)
 
 ``` r
 
-install.packages("ThermoPheno_0.1.1.tar.gz", repos = NULL, type = "source")
+install.packages("ThermoPheno_0.2.0.tar.gz", repos = NULL, type = "source")
 ```
 
 ## Launch the Shiny app
@@ -217,7 +217,7 @@ head(sim)
 | [`prepare_weather()`](https://mr-eini.github.io/ThermoPheno/reference/prepare_weather.md) | Standardises weather data and adds `year`, `doy`, and `tmean`. |
 | [`calc_daily_tt()`](https://mr-eini.github.io/ThermoPheno/reference/calc_daily_tt.md) | Calculates daily thermal time using simple, capped, or triangular methods. |
 | [`estimate_required_tt()`](https://mr-eini.github.io/ThermoPheno/reference/estimate_required_tt.md) | Estimates crop-specific required thermal time from a reference baseline period. |
-| [`estimate_required_tt_from_observed()`](https://mr-eini.github.io/ThermoPheno/reference/estimate_required_tt_from_observed.md) | Estimates required thermal time using observed phenological dates. |
+| [`estimate_required_tt_from_observed()`](https://mr-eini.github.io/ThermoPheno/reference/estimate_required_tt_from_observed.md) | Estimates required thermal time from observed planting and harvest dates, accumulated with the simulation rules by default. |
 | [`find_planting_date()`](https://mr-eini.github.io/ThermoPheno/reference/find_planting_date.md) | Finds the first temperature-valid planting date within an allowed window. |
 | [`simulate_one_year()`](https://mr-eini.github.io/ThermoPheno/reference/simulate_one_year.md) | Simulates one crop season for a selected crop and year. |
 | [`run_simulation()`](https://mr-eini.github.io/ThermoPheno/reference/run_simulation.md) | Runs multi-year crop phenology simulations. |

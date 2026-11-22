@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ThermoPheno</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,6 +34,24 @@
       <small>Source: <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="thermopheno-020">ThermoPheno 0.2.0<a class="anchor" aria-label="anchor" href="#thermopheno-020"></a></h2>
+<div class="section level3">
+<h3 id="calibration-consistent-with-the-simulation-0-2-0">Calibration consistent with the simulation<a class="anchor" aria-label="anchor" href="#calibration-consistent-with-the-simulation-0-2-0"></a></h3>
+<ul><li>
+<code><a href="../reference/estimate_required_tt_from_observed.html">estimate_required_tt_from_observed()</a></code> now accumulates each observed season with the same code and rules as <code><a href="../reference/simulate_one_year.html">simulate_one_year()</a></code>, including the vernalization and dormancy rules for winter crops. New arguments: <code>crop_type</code>, <code>winter_dormancy_temp</code>, <code>vernalization_required</code>, <code>vernalization_temp_min</code>, <code>vernalization_temp_max</code>, <code>vernalization_days_required</code>, <code>spring_regrowth_temp</code> and <code>accumulation = c("simulation", "raw")</code>. The returned list also reports <code>accumulation</code> and <code>crop_type</code>.</li>
+<li>In 0.1.1 the observed-calendar calibration summed raw thermal time. For winter crops with vernalization, that sum is larger than what the simulation accumulates over the same season, so the calibrated requirement was too high and simulated harvests were late or forced at the deadline. Calibrating a winter crop with <code>crop_type = "winter"</code> and the simulation’s rules corrects this. <code>accumulation = "raw"</code> reproduces the 0.1.1 values.</li>
+<li>For summer crops, and for calls that do not set <code>crop_type</code>, results equal 0.1.1 up to floating-point rounding (about 1e-12 °C·day), because the calibration now adds daily values in the same order as the simulation.</li>
+<li>
+<code><a href="../reference/estimate_required_tt.html">estimate_required_tt()</a></code>, <code><a href="../reference/simulate_one_year.html">simulate_one_year()</a></code> and <code><a href="../reference/run_simulation.html">run_simulation()</a></code> use one internal accumulator. Simulation results are unchanged; summer-crop <code><a href="../reference/estimate_required_tt.html">estimate_required_tt()</a></code> values can differ from 0.1.1 by floating-point rounding.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="validation-0-2-0">Validation<a class="anchor" aria-label="anchor" href="#validation-0-2-0"></a></h3>
+<ul><li>Reran the DWD validation with the same protocol and inputs. Winter wheat is now calibrated with its winter rules. Forced winter wheat harvests fell from 174 to 22 and failed seasons from 8 to 0. Winter wheat harvest MAE changed from 14.52 to 9.45 days. The 0.1.1 outputs are archived and compared in the validation article.</li>
+<li>Added a calibration-period diagnostic (<code>validation/diagnose_tt_consistency.R</code>) and run comparison scripts.</li>
+<li>Added round-trip, equality and raw-mode tests for calibration and simulation.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="thermopheno-011">ThermoPheno 0.1.1<a class="anchor" aria-label="anchor" href="#thermopheno-011"></a></h2>
 <ul><li>Documented the DWD validation workflow and its held-out evaluation.</li>

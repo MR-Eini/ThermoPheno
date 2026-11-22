@@ -19,7 +19,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ThermoPheno</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,9 +61,55 @@
 
     
     
-<p>ThermoPheno 0.1.1 was evaluated against observed sowing and harvest
+<p>ThermoPheno 0.2.0 was evaluated against observed sowing and harvest
 dates for maize, sugar beet and winter wheat in Germany. The run and
-data access date were 22 November 2026.</p>
+data access date were 22 November 2026. The protocol, inputs and station
+selection are the same as for the 0.1.1 evaluation, whose outputs are <a href="https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1" class="external-link">archived</a>
+and compared with the new results below.</p>
+<div class="section level2">
+<h2 id="what-changed-in-0-2-0">What changed in 0.2.0<a class="anchor" aria-label="anchor" href="#what-changed-in-0-2-0"></a>
+</h2>
+<p>In 0.1.1, <code><a href="../reference/estimate_required_tt_from_observed.html">estimate_required_tt_from_observed()</a></code> summed
+triangular thermal time over the observed planting–harvest interval
+without the winter-crop rules, whereas the winter simulation applies its
+vernalization and dormancy rules. For winter wheat the calibrated
+requirement was therefore larger than the thermal time the simulation
+accumulates over the same observed season.</p>
+<p>A diagnostic on the <strong>calibration years only
+(1991–2010)</strong> confirmed this. For all 323 winter wheat
+station-seasons, the thermal time accumulated by the simulation from the
+observed sowing date to the observed harvest date was lower than the
+calibration sum (ratio median 0.844, range 0.685–0.930). With the 0.1.1
+requirement, the simulation could not accumulate the requirement before
+the configured harvest deadline in 85% of calibration station-years. For
+maize and sugar beet, which use summer rules, the ratio was 1 in every
+season. The motivation for this check was the high number of forced
+winter wheat harvests in the 0.1.1 held-out results. The diagnosis and
+the fix used only the calibration years and synthetic tests. No code,
+configuration or protocol decision was based on the 2011–2024
+results.</p>
+<p>In 0.2.0, calibration and simulation accumulate thermal time with one
+shared internal function. The validation passes the crop’s winter rules
+to the calibration with <code>accumulation = "simulation"</code>, the
+new default. The old raw sum remains available as
+<code>accumulation = "raw"</code>. Thresholds, planting windows and
+harvest deadlines in the crop configuration are unchanged.</p>
+<ul>
+<li>
+<a href="../validation/diagnostics/tt_consistency_by_crop.csv">Diagnostic
+results by crop</a>, <a href="../validation/diagnostics/tt_consistency_by_station.csv">by
+station</a> and <a href="../validation/diagnostics/tt_consistency_by_season.csv">by
+season</a>
+</li>
+<li><a href="../validation/diagnostics/tt_reachable_before_deadline_summary.csv">Reachable
+thermal time before the harvest deadline</a></li>
+<li>
+<a href="../validation/diagnostics/diagnostic_v0.1.1.log">Diagnostic
+log for 0.1.1</a> and <a href="../validation/diagnostics/diagnostic_v0.2.0.log">for
+0.2.0</a>
+</li>
+</ul>
+</div>
 <div class="section level2">
 <h2 id="site-selection-and-calibration">Site selection and calibration<a class="anchor" aria-label="anchor" href="#site-selection-and-calibration"></a>
 </h2>
@@ -82,10 +128,12 @@ matched to the nearest DWD climate station with a historical daily
 archive and station metadata spanning 1991–2024.</p>
 <p>We calibrated one thermal-time requirement per crop and phenology
 station using <code><a href="../reference/estimate_required_tt_from_observed.html">estimate_required_tt_from_observed()</a></code>. The
-requirement is the median of the triangular thermal-time sums between
-observed planting and harvest in 1991–2010. Calibration required at
-least three seasons with temperature data for at least 95% of the
-observed interval and a positive median. The <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/validation/crop_config.csv" class="external-link">crop
+requirement is the median of the seasonal thermal-time sums between
+observed planting and harvest in 1991–2010, accumulated with the
+simulation’s rules (triangular thermal time; for winter wheat also
+vernalization and dormancy). Calibration required at least three seasons
+with temperature data for at least 95% of the observed interval and a
+positive median. The <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/validation/crop_config.csv" class="external-link">crop
 configuration</a> records the temperature thresholds and scheduling
 rules.</p>
 </div>
@@ -133,9 +181,9 @@ has no numeric error for that stage.</p>
 <td>Harvest</td>
 <td align="right">152</td>
 <td align="right">−7.34</td>
-<td align="right">15.33</td>
+<td align="right">15.32</td>
 <td align="right">19.58</td>
-<td align="right">0.251</td>
+<td align="right">0.252</td>
 </tr>
 <tr class="odd">
 <td>Sugar beet</td>
@@ -167,11 +215,11 @@ has no numeric error for that stage.</p>
 <tr class="even">
 <td>Winter wheat</td>
 <td>Harvest</td>
-<td align="right">209</td>
-<td align="right">13.33</td>
-<td align="right">14.52</td>
-<td align="right">17.18</td>
-<td align="right">0.096</td>
+<td align="right">217</td>
+<td align="right">−1.79</td>
+<td align="right">9.45</td>
+<td align="right">11.12</td>
+<td align="right">0.269</td>
 </tr>
 </tbody>
 </table>
@@ -186,10 +234,157 @@ September) falls after the reported emergence date (11 April). DWD
 flagged the sowing date as having no objections. The main results retain
 this case under the stated quality filter. Removing that record in a
 post hoc sensitivity check changes sugar beet planting MAE from 7.36 to
-6.34 days and RMSE from 15.83 to 7.90 days (167 paired dates).</p>
+6.34 days and RMSE from 15.83 to 7.90 days (167 paired dates). Planting
+results did not change in 0.2.0.</p>
 <p><img src="../validation/validation_scatter_planting.png" alt="Simulated and observed planting day of year, by crop, with a dashed 1:1 line"></p>
 <p><img src="../validation/validation_scatter_harvest.png" alt="Simulated and observed harvest day of year, by crop, with a dashed 1:1 line"></p>
 <p><img src="../validation/validation_error_distribution.png" alt="Signed planting and harvest errors, with a zero reference line, for each crop"></p>
+</div>
+<div class="section level2">
+<h2 id="comparison-with-0-1-1">Comparison with 0.1.1<a class="anchor" aria-label="anchor" href="#comparison-with-0-1-1"></a>
+</h2>
+<p>Both runs used the same 48 DWD input files (identical MD5 checksums),
+the same 75 attempted crop–station cases, the same station matches and
+the same held-out station-years. Simulated planting dates are
+identical.</p>
+<table class="table">
+<colgroup>
+<col width="11%">
+<col width="11%">
+<col width="15%">
+<col width="15%">
+<col width="15%">
+<col width="15%">
+<col width="15%">
+</colgroup>
+<thead><tr class="header">
+<th>Crop</th>
+<th>Phase</th>
+<th align="right">Paired dates 0.1.1 → 0.2.0</th>
+<th align="right">Bias (days)</th>
+<th align="right">MAE (days)</th>
+<th align="right">RMSE (days)</th>
+<th align="right">R²</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Maize</td>
+<td>Planting</td>
+<td align="right">152 → 152</td>
+<td align="right">0.29 → 0.29</td>
+<td align="right">7.17 → 7.17</td>
+<td align="right">9.58 → 9.58</td>
+<td align="right">0.097 → 0.097</td>
+</tr>
+<tr class="even">
+<td>Maize</td>
+<td>Harvest</td>
+<td align="right">152 → 152</td>
+<td align="right">−7.34 → −7.34</td>
+<td align="right">15.33 → 15.32</td>
+<td align="right">19.58 → 19.58</td>
+<td align="right">0.251 → 0.252</td>
+</tr>
+<tr class="odd">
+<td>Sugar beet</td>
+<td>Planting</td>
+<td align="right">168 → 168</td>
+<td align="right">−0.60 → −0.60</td>
+<td align="right">7.36 → 7.36</td>
+<td align="right">15.83 → 15.83</td>
+<td align="right">0.053 → 0.053</td>
+</tr>
+<tr class="even">
+<td>Sugar beet</td>
+<td>Harvest</td>
+<td align="right">168 → 168</td>
+<td align="right">−15.92 → −15.92</td>
+<td align="right">19.37 → 19.37</td>
+<td align="right">24.49 → 24.49</td>
+<td align="right">0.055 → 0.055</td>
+</tr>
+<tr class="odd">
+<td>Winter wheat</td>
+<td>Planting</td>
+<td align="right">217 → 217</td>
+<td align="right">−8.76 → −8.76</td>
+<td align="right">10.39 → 10.39</td>
+<td align="right">13.49 → 13.49</td>
+<td align="right">0.002 → 0.002</td>
+</tr>
+<tr class="even">
+<td>Winter wheat</td>
+<td>Harvest</td>
+<td align="right">209 → 217</td>
+<td align="right">13.33 → −1.79</td>
+<td align="right">14.52 → 9.45</td>
+<td align="right">17.18 → 11.12</td>
+<td align="right">0.096 → 0.269</td>
+</tr>
+</tbody>
+</table>
+<p>On the 209 winter wheat station-years with a simulated harvest in
+both runs, harvest bias changed from 13.33 to −2.01 days, MAE from 14.52
+to 9.36 days, RMSE from 17.18 to 11.02 days and R² from 0.096 to
+0.259.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Winter wheat held-out outcome</th>
+<th align="right">0.1.1</th>
+<th align="right">0.2.0</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Mature before the harvest deadline</td>
+<td align="right">35</td>
+<td align="right">195</td>
+</tr>
+<tr class="even">
+<td>Forced harvest below maturity</td>
+<td align="right">174</td>
+<td align="right">22</td>
+</tr>
+<tr class="odd">
+<td>Failed to mature (no simulated harvest)</td>
+<td align="right">8</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td>Insufficient evaluation weather</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<p>Maize had 8 forced harvests in both runs and no failed seasons. Sugar
+beet had no forced or failed harvests in either run.</p>
+<p>One maize harvest moved by one day (station 10353, 2019: 6 to 7
+September). Its requirement differs from 0.1.1 only by floating-point
+rounding (1099.275 versus 1099.2750000000003 °C·day). Daily thermal-time
+values from DWD temperatures fall on a 0.05 °C·day grid, so a simulated
+total can equal the requirement exactly. The order of summation then
+decides whether maturity is reached on that day. 0.2.0 sums in the same
+order as the simulation.</p>
+<ul>
+<li>
+<a href="../validation/comparison_metrics_v0.1.1_vs_new.csv">Metric
+comparison</a>, <a href="../validation/comparison_status_counts_v0.1.1_vs_new.csv">outcome
+counts</a>, <a href="../validation/comparison_exclusions_v0.1.1_vs_new.csv">attempted-case
+outcomes</a>, <a href="../validation/comparison_required_tt_v0.1.1_vs_new.csv">calibrated
+requirements</a>, <a href="../validation/comparison_input_checksums_v0.1.1_vs_new.csv">input
+checksums</a>, <a href="../validation/comparison_v0.1.1_vs_new.log">comparison log</a> and
+<a href="../validation/comparison_common_cases.log">common-case
+comparison</a>
+</li>
+<li>
+<a href="https://github.com/MR-Eini/ThermoPheno/tree/main/pkgdown/assets/validation/archive/v0.1.1" class="external-link">Archived
+0.1.1 outputs</a> (<a href="../validation/archive/v0.1.1/VALIDATION_SUMMARY.txt">summary</a>,
+<a href="../validation/archive/v0.1.1/validation_metrics.csv">metrics</a>,
+<a href="../validation/archive/v0.1.1/validation_pairs.csv">held-out
+pairs</a>) and the <a href="https://github.com/MR-Eini/ThermoPheno/blob/v0.1.1/vignettes/articles/dwd-validation.Rmd" class="external-link">0.1.1
+article source</a>
+</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="attempted-stations-and-exclusions">Attempted stations and exclusions<a class="anchor" aria-label="anchor" href="#attempted-stations-and-exclusions"></a>
@@ -234,17 +429,46 @@ post hoc sensitivity check changes sugar beet planting MAE from 7.36 to
 </tbody>
 </table>
 <p>Eight sugar beet and two winter wheat held-out seasons lacked
-sufficient weather. Eight wheat seasons failed to mature without a
-simulated harvest date. There were eight forced maize harvests and 174
-forced winter wheat harvests. The high frequency of forced wheat harvest
-and the early sugar beet harvest bias limit the usefulness of these
-settings for scheduling. The winter wheat calibration sums thermal time
-over the observed calendar. The winter simulation also applies its
-vernalization and dormancy rules, which can reduce the thermal time it
-accumulates over an equivalent interval.</p>
-<p>The sample favors stations with long calibration histories. Results
+sufficient weather. No winter wheat season failed to mature. There were
+eight forced maize harvests and 22 forced winter wheat harvests.</p>
+</div>
+<div class="section level2">
+<h2 id="interpretation-and-limitations">Interpretation and limitations<a class="anchor" aria-label="anchor" href="#interpretation-and-limitations"></a>
+</h2>
+<ul>
+<li>Skill remains low. R² is at most 0.27 for any crop and phase, and
+below 0.10 for every planting date and for sugar beet harvest. R²
+measures association, not agreement; bias, MAE and RMSE describe the
+size of the errors.</li>
+<li>Winter wheat harvest errors fell mainly because the calibration is
+now consistent with the simulation, which removed a systematic late
+bias. The simulated wheat sowing date remains about nine days early on
+average, with almost no association with observed sowing dates (R²
+0.002).</li>
+<li>Sowing and harvest dates are partly management decisions. Farmers
+respond to soil workability, rainfall, machinery and labour, crop
+rotation and markets, none of which a temperature-only model
+represents.</li>
+<li>The early sugar beet harvest bias (about −16 days) was not tuned.
+Sugar beet harvest is largely scheduled by the processing campaigns of
+sugar factories, which the thermal-time maturity date does not
+represent.</li>
+<li>The winter wheat harvest deadline (15 August) still forces 22
+held-out harvests. In the calibration years, 11% of the observed
+harvests at the selected stations fell after this date. The deadline was
+not changed.</li>
+<li>Winter dormancy and vernalization are simplified. Photoperiod, water
+stress, cultivar differences and frost kill are not represented.</li>
+<li>The sample favors stations with long calibration histories. Results
 describe this subset, crop configuration and climate-station matching
-procedure.</p>
+procedure.</li>
+<li>Station-years share climate stations and calibrations, so they are
+not independent tests.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="data-files">Data files<a class="anchor" aria-label="anchor" href="#data-files"></a>
+</h2>
 <ul>
 <li><a href="../validation/nearest_climate_station_matches.csv">All 75
 attempted crop–station cases and their outcomes</a></li>
@@ -266,10 +490,14 @@ checksums</a>, <a href="../validation/run.log">run log</a>, and <a href="../vali
 <div class="section level2">
 <h2 id="reproduce-the-run">Reproduce the run<a class="anchor" aria-label="anchor" href="#reproduce-the-run"></a>
 </h2>
-<p>Install ThermoPheno 0.1.1 and run the <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/validation/dwd_validate_thermopheno.R" class="external-link">validation
+<p>Install ThermoPheno 0.2.0 and run the <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/validation/dwd_validate_thermopheno.R" class="external-link">validation
 script</a> from the repository root. Use the manifest to verify the DWD
-inputs.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">Rscript</span> validation/dwd_validate_thermopheno.R</span></code></pre></div>
+inputs. The <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/validation/diagnose_tt_consistency.R" class="external-link">calibration-period
+diagnostic</a> and the <a href="https://github.com/MR-Eini/ThermoPheno/blob/main/validation/compare_validation_runs.R" class="external-link">run
+comparison</a> can be run the same way.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">Rscript</span> validation/dwd_validate_thermopheno.R</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">Rscript</span> validation/diagnose_tt_consistency.R</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="ex">Rscript</span> validation/compare_validation_runs.R</span></code></pre></div>
 <p>Source: Deutscher Wetterdienst (DWD), Climate Data Center. The tables
 and plots use filtered, aggregated observations and model-derived
 quantities. <a href="https://opendata.dwd.de/climate_environment/CDC/observations_germany/phenology/annual_reporters/crops/historical/" class="external-link">Historical

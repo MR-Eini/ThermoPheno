@@ -1,0 +1,51 @@
+Reading validation crop configuration...
+Discovering DWD phenology files...
+Discovering DWD climate files...
+Downloading climate station metadata...
+Downloading DWD phenology station metadata...
+New names:
+• `` -> `...13`
+Downloading DWD phase-definition table...
+New names:
+• `` -> `...9`
+Warning messages:
+1: package 'readr' was built under R version 4.5.3 
+2: package 'ggplot2' was built under R version 4.5.3 
+3: package 'tidyr' was built under R version 4.5.3 
+ThermoPheno version under diagnosis: 0.2.0
+Calibration years only: 1991-2010
+Diagnosing crop: Maize
+New names:
+• `` -> `...10`
+Diagnosing crop: Sugar beet
+New names:
+• `` -> `...10`
+Diagnosing crop: Winter wheat
+New names:
+• `` -> `...10`
+ThermoPheno version: 0.2.0 
+Calibration years: 1991 - 2010 
+
+(b)/(a) by crop
+     crop_name n_seasons n_excluded ratio_min ratio_p10 ratio_median ratio_mean ratio_p90 ratio_max share_ratio_below_0_99 median_raw_minus_sim_tt
+1        Maize       279          1 1.0000000 1.0000000    1.0000000  1.0000000 1.0000000 1.0000000                      0                     0.0
+2   Sugar beet       445          0 1.0000000 1.0000000    1.0000000  1.0000000 1.0000000 1.0000000                      0                     0.0
+3 Winter wheat       323          1 0.6846571 0.7728767    0.8439896  0.8417115 0.9018305 0.9297185                      1                   360.8
+
+Calibration with accumulation = 'simulation' vs simulation accumulation (b)
+     crop_name   n max_abs_difference
+1        Maize 279                  0
+2   Sugar beet 445                  0
+3 Winter wheat 323                  0
+
+Reachable thermal time before the harvest deadline
+     crop_name n_station_years n_stations n_not_planted share_reach_below_raw_requirement share_reach_below_sim_requirement median_reach_tt median_raw_requirement median_sim_requirement
+1        Maize             293         20             9                        0.10921502                        0.10921502        1365.260               1190.100                1190.10
+2   Sugar beet             456         24             5                        0.03947368                        0.03947368        2591.381               2296.960                2296.96
+3 Winter wheat             343         22             6                        0.85131195                        0.23906706        2128.475               2359.775                1983.95
+
+Observed calibration-period harvest dates vs configured deadline
+     crop_name latest_harvest_mmdd n_calibration_harvests share_observed_after_deadline harvest_p50 harvest_p90 harvest_p95 harvest_max
+1        Maize               11-15                    500                   0.000000000       09-23       10-11       10-15       11-06
+2   Sugar beet               11-30                    499                   0.002004008       10-05       10-24       10-30       12-10
+3 Winter wheat               08-15                    500                   0.110000000       08-04       08-16       08-20       09-04

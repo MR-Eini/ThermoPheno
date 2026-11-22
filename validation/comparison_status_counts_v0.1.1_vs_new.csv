@@ -1,0 +1,9 @@
+crop_name,status,n_v011,n_new
+Maize,forced_harvest_immature,8,8
+Maize,mature,144,144
+Sugar beet,insufficient_evaluation_weather,8,8
+Sugar beet,mature,168,168
+Winter wheat,failed_to_mature,8,0
+Winter wheat,forced_harvest_immature,174,22
+Winter wheat,insufficient_evaluation_weather,2,2
+Winter wheat,mature,35,195

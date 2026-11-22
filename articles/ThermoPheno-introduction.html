@@ -19,7 +19,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ThermoPheno</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,40 @@ temperature fields.</p>
 <span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/default_parameters.html">default_parameters</a></span><span class="op">(</span><span class="st">"summer"</span><span class="op">)</span></span>
 <span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_required_tt.html">estimate_required_tt</a></span><span class="op">(</span><span class="va">weather</span>, <span class="fl">1981</span><span class="op">:</span><span class="fl">2010</span>, <span class="va">params</span><span class="op">$</span><span class="va">baseline_planting_mmdd</span>, <span class="va">params</span><span class="op">$</span><span class="va">days_to_maturity</span>, <span class="va">params</span><span class="op">$</span><span class="va">t_base</span>, <span class="va">params</span><span class="op">$</span><span class="va">t_opt</span>, <span class="va">params</span><span class="op">$</span><span class="va">t_max_cut</span>, <span class="st">"triangular"</span>, <span class="st">"summer"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/run_simulation.html">run_simulation</a></span><span class="op">(</span><span class="va">weather</span>, <span class="va">params</span><span class="op">$</span><span class="va">crop_name</span>, <span class="va">req</span><span class="op">$</span><span class="va">required_tt</span>, <span class="va">params</span><span class="op">$</span><span class="va">earliest_planting_mmdd</span>, <span class="va">params</span><span class="op">$</span><span class="va">latest_planting_mmdd</span>, <span class="va">params</span><span class="op">$</span><span class="va">latest_harvest_mmdd</span>, <span class="va">params</span><span class="op">$</span><span class="va">t_base</span>, <span class="va">params</span><span class="op">$</span><span class="va">t_opt</span>, <span class="va">params</span><span class="op">$</span><span class="va">t_max_cut</span>, <span class="st">"triangular"</span>, <span class="st">"summer"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="calibrating-from-observed-dates">Calibrating from observed dates<a class="anchor" aria-label="anchor" href="#calibrating-from-observed-dates"></a>
+</h2>
+<p><code><a href="../reference/estimate_required_tt_from_observed.html">estimate_required_tt_from_observed()</a></code> derives the
+requirement from observed planting and harvest dates. By default
+(<code>accumulation = "simulation"</code>), each season is accumulated
+with the same rules the simulation uses after planting. Pass the same
+crop type and winter-crop rules as to the simulation, so that a
+simulation started on an observed planting date matures on the observed
+harvest date of that season.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">wheat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/default_parameters.html">default_parameters</a></span><span class="op">(</span><span class="st">"winter"</span><span class="op">)</span></span>
+<span><span class="va">observed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  crop_year <span class="op">=</span> <span class="fl">1990</span><span class="op">:</span><span class="fl">1992</span>,</span>
+<span>  observed_planting_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1989-10-05"</span>, <span class="st">"1990-10-08"</span>, <span class="st">"1991-10-03"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  observed_harvest_date <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.Date.html" class="external-link">as.Date</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1990-08-01"</span>, <span class="st">"1991-08-05"</span>, <span class="st">"1992-07-28"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">req_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/estimate_required_tt_from_observed.html">estimate_required_tt_from_observed</a></span><span class="op">(</span></span>
+<span>  <span class="va">weather</span>, <span class="va">observed</span>, calibration_years <span class="op">=</span> <span class="fl">1990</span><span class="op">:</span><span class="fl">1992</span>,</span>
+<span>  t_base <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">t_base</span>, t_opt <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">t_opt</span>, t_max_cut <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">t_max_cut</span>,</span>
+<span>  tt_mode <span class="op">=</span> <span class="st">"triangular"</span>, crop_type <span class="op">=</span> <span class="st">"winter"</span>,</span>
+<span>  winter_dormancy_temp <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">winter_dormancy_temp</span>,</span>
+<span>  vernalization_required <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">vernalization_required</span>,</span>
+<span>  vernalization_days_required <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">vernalization_days_required</span>,</span>
+<span>  spring_regrowth_temp <span class="op">=</span> <span class="va">wheat</span><span class="op">$</span><span class="va">spring_regrowth_temp</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">req_obs</span><span class="op">$</span><span class="va">required_tt</span></span></code></pre></div>
+<p><code>accumulation = "raw"</code> sums daily thermal time without the
+winter-crop rules, as ThermoPheno 0.1.1 did. For winter crops with
+vernalization, a raw requirement is larger than the thermal time the
+simulation can accumulate over the same season, which makes simulated
+harvests late or forced at the deadline. For summer crops, both settings
+give the same values up to floating-point rounding.</p>
+</div>
   </main>
 </div>
 
