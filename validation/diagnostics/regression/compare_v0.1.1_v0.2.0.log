@@ -1,0 +1,27 @@
+Old version: 0.1.1  New version: 0.2.0 
+
+                                                  case                                fun identical max_abs_numeric_diff same_dates_and_status       old_value       new_value
+                             bundled_historical|summer               estimate_required_tt     FALSE         1.136868e-12                    NA 1267.8655250000 1267.8655250000
+                             bundled_historical|summer                     run_simulation     FALSE         0.000000e+00                  TRUE n=30; mature=30 n=30; mature=30
+                             bundled_historical|summer estimate_required_tt_from_observed     FALSE         1.364242e-12                    NA 1272.3712500000 1272.3712500000
+                             bundled_historical|winter               estimate_required_tt      TRUE         0.000000e+00                    NA 1604.1228947368 1604.1228947368
+                             bundled_historical|winter                     run_simulation      TRUE         0.000000e+00                  TRUE n=29; mature=28 n=29; mature=28
+                             bundled_historical|winter estimate_required_tt_from_observed     FALSE         1.818989e-12                    NA 2308.1787500000 2308.1787500000
+ tageswerte_KL_00150_19510101_20251231_hist.zip|summer               estimate_required_tt     FALSE         1.136868e-12                    NA 1239.1505555556 1239.1505555556
+ tageswerte_KL_00150_19510101_20251231_hist.zip|summer                     run_simulation      TRUE         0.000000e+00                  TRUE n=21; mature=19 n=21; mature=19
+ tageswerte_KL_00150_19510101_20251231_hist.zip|summer estimate_required_tt_from_observed     FALSE         6.821210e-13                    NA 1244.5600000000 1244.5600000000
+ tageswerte_KL_00150_19510101_20251231_hist.zip|winter               estimate_required_tt      TRUE         0.000000e+00                    NA 2034.7073529412 2034.7073529412
+ tageswerte_KL_00150_19510101_20251231_hist.zip|winter                     run_simulation      TRUE         0.000000e+00                  TRUE n=20; mature=14 n=20; mature=14
+ tageswerte_KL_00150_19510101_20251231_hist.zip|winter estimate_required_tt_from_observed     FALSE         1.818989e-12                    NA 2669.9000000000 2669.9000000000
+ tageswerte_KL_00191_19860401_20251231_hist.zip|summer               estimate_required_tt     FALSE         6.821210e-13                    NA 1145.2340000000 1145.2340000000
+ tageswerte_KL_00191_19860401_20251231_hist.zip|summer                     run_simulation      TRUE         0.000000e+00                  TRUE n=21; mature=21 n=21; mature=21
+ tageswerte_KL_00191_19860401_20251231_hist.zip|summer estimate_required_tt_from_observed     FALSE         1.136868e-12                    NA 1150.4000000000 1150.4000000000
+ tageswerte_KL_00191_19860401_20251231_hist.zip|winter               estimate_required_tt      TRUE         0.000000e+00                    NA 1910.5210526316 1910.5210526316
+ tageswerte_KL_00191_19860401_20251231_hist.zip|winter                     run_simulation      TRUE         0.000000e+00                  TRUE n=20; mature=15 n=20; mature=15
+ tageswerte_KL_00191_19860401_20251231_hist.zip|winter estimate_required_tt_from_observed     FALSE         1.818989e-12                    NA 2496.9375000000 2496.9375000000
+ tageswerte_KL_00232_19470101_20251231_hist.zip|summer               estimate_required_tt     FALSE         4.547474e-13                    NA 1073.7122500000 1073.7122500000
+ tageswerte_KL_00232_19470101_20251231_hist.zip|summer                     run_simulation      TRUE         0.000000e+00                  TRUE n=21; mature=21 n=21; mature=21
+ tageswerte_KL_00232_19470101_20251231_hist.zip|summer estimate_required_tt_from_observed     FALSE         9.094947e-13                    NA 1076.7400000000 1076.7400000000
+ tageswerte_KL_00232_19470101_20251231_hist.zip|winter               estimate_required_tt      TRUE         0.000000e+00                    NA 1810.5815789474 1810.5815789474
+ tageswerte_KL_00232_19470101_20251231_hist.zip|winter                     run_simulation      TRUE         0.000000e+00                  TRUE n=20; mature=14 n=20; mature=14
+ tageswerte_KL_00232_19470101_20251231_hist.zip|winter estimate_required_tt_from_observed     FALSE         2.273737e-12                    NA 2360.7875000000 2360.7875000000

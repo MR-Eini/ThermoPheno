@@ -1,6 +1,6 @@
 # DWD phenology validation
 
-Install ThermoPheno 0.1.1 from this repository. The script loads the installed
+Install ThermoPheno 0.2.0 from this repository. The script loads the installed
 package and uses `readr`, `dplyr`, `lubridate`, `ggplot2` and `tidyr`.
 From the repository root, run:
 

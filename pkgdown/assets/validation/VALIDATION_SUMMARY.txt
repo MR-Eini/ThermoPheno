@@ -3,7 +3,7 @@ Run date: 2026-11-22
 Validation pairs: 547
 Phenology stations: 48
 Climate stations: 33
-ThermoPheno version: 0.1.1
+ThermoPheno version: 0.2.0
 Calibration harvest years: 1991 to 2010
 Evaluation harvest years: 2011 to 2024
 Minimum observed TT calibration years: 3
@@ -17,5 +17,5 @@ Minimum weather coverage for observed TT: 0.95
 3 Sugar beet   planting   168  7.36 15.8   -0.595   6                63.7
 4 Sugar beet   harvest    168 19.4  24.5  -15.9    16                26.2
 5 Winter wheat planting   217 10.4  13.5   -8.76    9                44.7
-6 Winter wheat harvest    209 14.5  17.2   13.3    14                27.8
+6 Winter wheat harvest    217  9.45 11.1   -1.79    8                39.6
 # ℹ 2 more variables: within_14_days_pct <dbl>, r2 <dbl>

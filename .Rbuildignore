@@ -15,3 +15,8 @@
 ^README[.]Rmd$
 ^[.]zenodo[.]json$
 ^CITATION[.]cff$
+^validation/diagnostics$
+^validation/compare_validation_runs[.]R$
+^validation/compare_common_cases[.]R$
+^validation/diagnose_tt_consistency[.]R$
+^UPDATE_REPORT_.*[.]md$

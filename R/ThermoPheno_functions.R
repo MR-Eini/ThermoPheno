@@ -82,7 +82,89 @@ calc_daily_tt <- function(tmin, tmax, t_base, t_opt = NA_real_, t_max_cut = NA_r
   tt
 }
 
+# Shared thermal-time accumulator.
+#
+# Single source of truth for the thermal time a crop accumulates over a run of
+# consecutive daily weather records, starting on the planting day. It applies
+# the thermal-time method and, for winter crops, the vernalization and dormancy
+# rules. Used by simulate_one_year(), estimate_required_tt() and
+# estimate_required_tt_from_observed(accumulation = "simulation").
+#
+# Returns a list with daily_tt, cum_tt (running total), total_tt and the final
+# vernalization_satisfied, vernalization_days and regrowth_started states.
+# The total is accumulated sequentially in double precision, as the simulation
+# has always done.
+accumulate_season_tt <- function(tmin,
+                                 tmax,
+                                 tmean = (as.numeric(tmin) + as.numeric(tmax)) / 2,
+                                 t_base,
+                                 t_opt = NA_real_,
+                                 t_max_cut = NA_real_,
+                                 tt_mode = "simple",
+                                 crop_type = c("summer", "winter"),
+                                 winter_dormancy_temp = 0,
+                                 vernalization_required = FALSE,
+                                 vernalization_temp_min = 0,
+                                 vernalization_temp_max = 10,
+                                 vernalization_days_required = 30,
+                                 spring_regrowth_temp = 5) {
+  crop_type <- match.arg(crop_type)
+  n <- length(tmean)
+  is_winter <- crop_type == "winter"
+  needs_vernalization <- is_winter && isTRUE(vernalization_required)
+
+  daily_raw <- if (n > 0) {
+    calc_daily_tt(tmin, tmax, t_base, t_opt, t_max_cut, mode = tt_mode)
+  } else numeric(0)
+
+  vernal_days <- 0
+  vern_sat <- !needs_vernalization
+  regrowth_started <- FALSE
+  cum_tt <- 0
+  daily_tt <- numeric(n)
+  cum_vec <- numeric(n)
+
+  for (i in seq_len(n)) {
+    tmean_i <- tmean[i]
+
+    if (needs_vernalization && !vern_sat) {
+      if (tmean_i >= vernalization_temp_min && tmean_i <= vernalization_temp_max) {
+        vernal_days <- vernal_days + 1
+      }
+      if (vernal_days >= vernalization_days_required) vern_sat <- TRUE
+    }
+
+    if (is_winter && vern_sat && !regrowth_started && tmean_i >= spring_regrowth_temp) {
+      regrowth_started <- TRUE
+    }
+
+    if (is_winter && !vern_sat) {
+      tt_i <- 0
+    } else {
+      tt_i <- daily_raw[i]
+      if (is_winter && tmean_i <= winter_dormancy_temp) tt_i <- 0
+    }
+
+    cum_tt <- cum_tt + tt_i
+    daily_tt[i] <- tt_i
+    cum_vec[i] <- cum_tt
+  }
+
+  list(
+    daily_tt = daily_tt,
+    cum_tt = cum_vec,
+    total_tt = cum_tt,
+    vernalization_satisfied = vern_sat,
+    vernalization_days = vernal_days,
+    regrowth_started = regrowth_started
+  )
+}
+
 #' Estimate required thermal time from a reference baseline period
+#'
+#' Thermal time is accumulated from the reference planting date over
+#' `days_to_maturity` days with the same code and rules as [simulate_one_year()],
+#' including the vernalization and dormancy rules for winter crops.
 #'
 #' @param weather Prepared weather data returned by `prepare_weather()`.
 #' @param baseline_years Integer vector of baseline years.
@@ -132,34 +214,19 @@ estimate_required_tt <- function(weather,
       return(data.frame(year = yr, required_tt = NA_real_, stringsAsFactors = FALSE))
     }
 
-    if (crop_type == "summer") {
-      tt <- calc_daily_tt(sub$tmin, sub$tmax, t_base, t_opt, t_max_cut, mode = tt_mode)
-      return(data.frame(year = yr, required_tt = sum(tt, na.rm = TRUE), stringsAsFactors = FALSE))
-    }
+    acc <- accumulate_season_tt(
+      tmin = sub$tmin, tmax = sub$tmax, tmean = sub$tmean,
+      t_base = t_base, t_opt = t_opt, t_max_cut = t_max_cut, tt_mode = tt_mode,
+      crop_type = crop_type,
+      winter_dormancy_temp = winter_dormancy_temp,
+      vernalization_required = vernalization_required,
+      vernalization_temp_min = vernalization_temp_min,
+      vernalization_temp_max = vernalization_temp_max,
+      vernalization_days_required = vernalization_days_required,
+      spring_regrowth_temp = spring_regrowth_temp
+    )
 
-    vernal_days <- 0
-    vern_sat <- !isTRUE(vernalization_required)
-    cum_tt <- 0
-
-    for (i in seq_len(nrow(sub))) {
-      tmean_i <- sub$tmean[i]
-      if (isTRUE(vernalization_required) && !vern_sat) {
-        if (tmean_i >= vernalization_temp_min && tmean_i <= vernalization_temp_max) {
-          vernal_days <- vernal_days + 1
-        }
-        if (vernal_days >= vernalization_days_required) vern_sat <- TRUE
-      }
-
-      if (!vern_sat) {
-        tt_i <- 0
-      } else {
-        tt_i <- calc_daily_tt(sub$tmin[i], sub$tmax[i], t_base, t_opt, t_max_cut, mode = tt_mode)
-        if (tmean_i <= winter_dormancy_temp) tt_i <- 0
-      }
-      cum_tt <- cum_tt + tt_i
-    }
-
-    data.frame(year = yr, required_tt = cum_tt, stringsAsFactors = FALSE)
+    data.frame(year = yr, required_tt = acc$total_tt, stringsAsFactors = FALSE)
   })
 
   yearly <- do.call(rbind, out)
@@ -322,38 +389,23 @@ simulate_one_year <- function(weather,
     ))
   }
 
-  vernal_days <- 0
-  vern_sat <- !(crop_type == "winter" && isTRUE(vernalization_required))
-  regrowth_started <- FALSE
-  cum_tt <- 0
-  cum_vec <- numeric(nrow(sim_period))
+  acc <- accumulate_season_tt(
+    tmin = sim_period$tmin, tmax = sim_period$tmax, tmean = sim_period$tmean,
+    t_base = t_base, t_opt = t_opt, t_max_cut = t_max_cut, tt_mode = tt_mode,
+    crop_type = crop_type,
+    winter_dormancy_temp = winter_dormancy_temp,
+    vernalization_required = vernalization_required,
+    vernalization_temp_min = vernalization_temp_min,
+    vernalization_temp_max = vernalization_temp_max,
+    vernalization_days_required = vernalization_days_required,
+    spring_regrowth_temp = spring_regrowth_temp
+  )
+  vernal_days <- acc$vernalization_days
+  vern_sat <- acc$vernalization_satisfied
+  regrowth_started <- acc$regrowth_started
+  cum_vec <- acc$cum_tt
 
-  for (i in seq_len(nrow(sim_period))) {
-    tmean_i <- sim_period$tmean[i]
-
-    if (crop_type == "winter" && isTRUE(vernalization_required) && !vern_sat) {
-      if (tmean_i >= vernalization_temp_min && tmean_i <= vernalization_temp_max) {
-        vernal_days <- vernal_days + 1
-      }
-      if (vernal_days >= vernalization_days_required) vern_sat <- TRUE
-    }
-
-    if (crop_type == "winter" && vern_sat && !regrowth_started && tmean_i >= spring_regrowth_temp) {
-      regrowth_started <- TRUE
-    }
-
-    if (crop_type == "winter" && !vern_sat) {
-      tt_i <- 0
-    } else {
-      tt_i <- calc_daily_tt(sim_period$tmin[i], sim_period$tmax[i], t_base, t_opt, t_max_cut, mode = tt_mode)
-      if (crop_type == "winter" && tmean_i <= winter_dormancy_temp) tt_i <- 0
-    }
-
-    cum_tt <- cum_tt + tt_i
-    cum_vec[i] <- cum_tt
-  }
-
-  accumulated_tt <- cum_tt
+  accumulated_tt <- acc$total_tt
   maturity_fraction <- if (isTRUE(required_tt > 0)) accumulated_tt / required_tt else NA_real_
   mature_idx <- which(cum_vec >= required_tt)
 
@@ -564,6 +616,31 @@ compare_validation_metrics <- function(df, observed_col = "observed_date", simul
 
 #' Estimate required thermal time from observed planting and harvest dates
 #'
+#' For each observed season, thermal time is accumulated from the observed
+#' planting date to the observed harvest date (both inclusive). The required
+#' thermal time is the median (or mean) of these seasonal sums.
+#'
+#' @section Accumulation:
+#' With `accumulation = "simulation"` (the default), each season is accumulated
+#' with the same code and rules that [simulate_one_year()] uses after planting:
+#' the thermal-time method and, for `crop_type = "winter"`, the vernalization
+#' and dormancy rules. A requirement calibrated this way is reached by the
+#' simulation on the observed harvest date when the simulation is started on the
+#' observed planting date of the same season.
+#'
+#' With `accumulation = "raw"`, the daily thermal time is summed over the
+#' observed interval without the winter-crop rules. This reproduces
+#' ThermoPheno 0.1.1. For winter crops with vernalization, the raw sum is larger
+#' than what the simulation accumulates over the same interval, so a raw
+#' requirement is systematically too high for the simulation to reach on time.
+#'
+#' For summer crops (the default `crop_type`), both settings sum the same daily
+#' values, so calls written for ThermoPheno 0.1.1 return the same values up to
+#' floating-point rounding (the simulation adds day by day in double precision;
+#' the raw sum uses [sum()]). That rounding difference could, in 0.1.1, place a
+#' simulated maturity one day after the observed harvest date of a calibration
+#' season.
+#'
 #' @param weather Prepared weather data from `prepare_weather()`.
 #' @param observed_calendar Data frame with observed planting and harvest dates.
 #' @param calibration_years Years used for thermal-time calibration.
@@ -576,7 +653,16 @@ compare_validation_metrics <- function(df, observed_col = "observed_date", simul
 #' @param tt_mode Thermal-time method: `simple`, `capped`, or `triangular`.
 #' @param summary_fun Summary method for annual TT values: `median` or `mean`.
 #' @param min_weather_coverage Minimum fraction of daily weather records required.
-#' @return A list containing yearly observed TT values and the estimated required TT.
+#' @param crop_type `summer` or `winter`. Selects the accumulation rules used
+#'   with `accumulation = "simulation"`; pass the same value as to the simulation.
+#' @param winter_dormancy_temp,vernalization_required,vernalization_temp_min,vernalization_temp_max,vernalization_days_required,spring_regrowth_temp
+#'   Winter-crop rules, as in [simulate_one_year()]. Pass the values used for
+#'   the simulation. Ignored for summer crops and with `accumulation = "raw"`.
+#' @param accumulation `simulation` (default) accumulates thermal time with the
+#'   simulation rules; `raw` reproduces the 0.1.1 raw sum. See the Accumulation
+#'   section.
+#' @return A list containing yearly observed TT values and the estimated
+#'   required TT, plus the `accumulation` and `crop_type` used.
 #' @export
 estimate_required_tt_from_observed <- function(
     weather,
@@ -590,9 +676,19 @@ estimate_required_tt_from_observed <- function(
     t_max_cut = NA_real_,
     tt_mode = "simple",
     summary_fun = c("median", "mean"),
-    min_weather_coverage = 0.95
+    min_weather_coverage = 0.95,
+    crop_type = c("summer", "winter"),
+    winter_dormancy_temp = 0,
+    vernalization_required = FALSE,
+    vernalization_temp_min = 0,
+    vernalization_temp_max = 10,
+    vernalization_days_required = 30,
+    spring_regrowth_temp = 5,
+    accumulation = c("simulation", "raw")
 ) {
   summary_fun <- match.arg(summary_fun)
+  crop_type <- match.arg(crop_type)
+  accumulation <- match.arg(accumulation)
   if (!is.data.frame(weather)) stop("`weather` must be a data frame.", call. = FALSE)
   if (!is.data.frame(observed_calendar)) stop("`observed_calendar` must be a data frame.", call. = FALSE)
 
@@ -639,14 +735,29 @@ estimate_required_tt_from_observed <- function(
       ))
     }
 
-    tt <- calc_daily_tt(
-      tmin = sub$tmin,
-      tmax = sub$tmax,
-      t_base = t_base,
-      t_opt = t_opt,
-      t_max_cut = t_max_cut,
-      mode = tt_mode
-    )
+    season_tt <- if (accumulation == "raw") {
+      tt <- calc_daily_tt(
+        tmin = sub$tmin,
+        tmax = sub$tmax,
+        t_base = t_base,
+        t_opt = t_opt,
+        t_max_cut = t_max_cut,
+        mode = tt_mode
+      )
+      sum(tt, na.rm = TRUE)
+    } else {
+      accumulate_season_tt(
+        tmin = sub$tmin, tmax = sub$tmax, tmean = sub$tmean,
+        t_base = t_base, t_opt = t_opt, t_max_cut = t_max_cut, tt_mode = tt_mode,
+        crop_type = crop_type,
+        winter_dormancy_temp = winter_dormancy_temp,
+        vernalization_required = vernalization_required,
+        vernalization_temp_min = vernalization_temp_min,
+        vernalization_temp_max = vernalization_temp_max,
+        vernalization_days_required = vernalization_days_required,
+        spring_regrowth_temp = spring_regrowth_temp
+      )$total_tt
+    }
 
     data.frame(
       crop_year = obs$crop_year_tmp[i],
@@ -655,7 +766,7 @@ estimate_required_tt_from_observed <- function(
       expected_days = expected_days,
       available_weather_days = nrow(sub),
       weather_coverage = coverage,
-      observed_required_tt = sum(tt, na.rm = TRUE),
+      observed_required_tt = season_tt,
       stringsAsFactors = FALSE
     )
   })
@@ -676,6 +787,8 @@ estimate_required_tt_from_observed <- function(
     calibration_method = "observed_calendar",
     summary_fun = summary_fun,
     min_weather_coverage = min_weather_coverage,
-    n_valid_years = nrow(valid_tt)
+    n_valid_years = nrow(valid_tt),
+    accumulation = accumulation,
+    crop_type = crop_type
   )
 }

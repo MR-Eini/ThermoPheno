@@ -1,0 +1,44 @@
+Warning messages:
+1: package 'readr' was built under R version 4.5.3
+2: package 'ggplot2' was built under R version 4.5.3
+3: package 'tidyr' was built under R version 4.5.3
+Reading validation crop configuration...
+Discovering DWD phenology files...
+Discovering DWD climate files...
+Downloading climate station metadata...
+Downloading DWD phenology station metadata...
+New names:
+• `` -> `...13`
+Downloading DWD phase-definition table...
+New names:
+• `` -> `...9`
+Processing crop: Maize
+  Using DWD phenology file: PH_Jahresmelder_Landwirtschaft_Kulturpflanze_Mais_1936_2024_hist.txt
+New names:
+• `` -> `...10`
+Processing crop: Sugar beet
+  Using DWD phenology file: PH_Jahresmelder_Landwirtschaft_Kulturpflanze_Zucker-Ruebe_1925_2024_hist.txt
+New names:
+• `` -> `...10`
+Processing crop: Winter wheat
+  Using DWD phenology file: PH_Jahresmelder_Landwirtschaft_Kulturpflanze_Winterweizen_1925_2024_hist.txt
+New names:
+• `` -> `...10`
+Warning messages:
+1: In value[[3L]](cond) :
+  Calibration failed for Maize_10010: Could not estimate observed thermal-time requirement.
+2: In value[[3L]](cond) :
+  Calibration failed for Maize_10295: Could not estimate observed thermal-time requirement.
+3: In value[[3L]](cond) :
+  Calibration failed for Maize_10364: Could not estimate observed thermal-time requirement.
+4: In value[[3L]](cond) :
+  Calibration failed for Maize_10541: Could not estimate observed thermal-time requirement.
+5: In value[[3L]](cond) :
+  Calibration failed for Sugar beet_15094: Could not estimate observed thermal-time requirement.
+6: In value[[3L]](cond) :
+  Calibration failed for Winter wheat_10015: Could not estimate observed thermal-time requirement.
+7: In value[[3L]](cond) :
+  Calibration failed for Winter wheat_10061: Could not estimate observed thermal-time requirement.
+8: In value[[3L]](cond) :
+  Calibration failed for Winter wheat_10295: Could not estimate observed thermal-time requirement.
+DWD validation completed. Results written to validation/results

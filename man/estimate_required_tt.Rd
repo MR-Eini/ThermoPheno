@@ -57,5 +57,7 @@ estimate_required_tt(
 A list with yearly thermal-time values and the mean required thermal time.
 }
 \description{
-Estimate required thermal time from a reference baseline period
+Thermal time is accumulated from the reference planting date over
+\code{days_to_maturity} days with the same code and rules as \code{\link[=simulate_one_year]{simulate_one_year()}},
+including the vernalization and dormancy rules for winter crops.
 }

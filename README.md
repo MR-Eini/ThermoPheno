@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23619166.svg)](https://doi.org/10.5281/zenodo.23619166)
 [![R-CMD-check](https://github.com/MR-Eini/ThermoPheno/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MR-Eini/ThermoPheno/actions/workflows/R-CMD-check.yaml)
 [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/MR-Eini/ThermoPheno/blob/main/LICENSE)
-[![Version 0.1.1](https://img.shields.io/badge/version-0.1.1-blue.svg)](https://github.com/MR-Eini/ThermoPheno/releases)
+[![Version 0.2.0](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/MR-Eini/ThermoPheno/releases)
 
 Archived release 0.1.0: [10.5281/zenodo.23619167](https://doi.org/10.5281/zenodo.23619167).
 
@@ -73,7 +73,7 @@ if (!requireNamespace("remotes", quietly = TRUE)) {
   install.packages("remotes")
 }
 
-remotes::install_github("MR-Eini/ThermoPheno", ref = "v0.1.1", dependencies = TRUE)
+remotes::install_github("MR-Eini/ThermoPheno", ref = "v0.2.0", dependencies = TRUE)
 ```
 
 ### Install from a local source folder
@@ -85,7 +85,7 @@ remotes::install_local("ThermoPheno", dependencies = TRUE)
 ### Install from a source archive
 
 ```r
-install.packages("ThermoPheno_0.1.1.tar.gz", repos = NULL, type = "source")
+install.packages("ThermoPheno_0.2.0.tar.gz", repos = NULL, type = "source")
 ```
 
 ## Launch the Shiny app
@@ -187,7 +187,7 @@ head(sim)
 | `prepare_weather()` | Standardises weather data and adds `year`, `doy`, and `tmean`. |
 | `calc_daily_tt()` | Calculates daily thermal time using simple, capped, or triangular methods. |
 | `estimate_required_tt()` | Estimates crop-specific required thermal time from a reference baseline period. |
-| `estimate_required_tt_from_observed()` | Estimates required thermal time using observed phenological dates. |
+| `estimate_required_tt_from_observed()` | Estimates required thermal time from observed planting and harvest dates, accumulated with the simulation rules by default. |
 | `find_planting_date()` | Finds the first temperature-valid planting date within an allowed window. |
 | `simulate_one_year()` | Simulates one crop season for a selected crop and year. |
 | `run_simulation()` | Runs multi-year crop phenology simulations. |

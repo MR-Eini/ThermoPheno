@@ -1,0 +1,5 @@
+  version   crop calibration     required_tt observed_harvest simulated_status simulated_maturity maturity_error_days accumulated_tt_at_deadline_or_maturity round_trip_within_1_day
+1   0.2.0 winter         raw 2048.8223908266       2001-07-25           mature         2001-08-13                  19                               2062.646                   FALSE
+2   0.2.0 winter  simulation 1738.7834266131       2001-07-25           mature         2001-07-25                   0                               1738.783                    TRUE
+3   0.2.0 summer         raw 1224.4860296517       2001-09-20           mature         2001-09-21                   1                               1230.198                    TRUE
+4   0.2.0 summer  simulation 1224.4860296517       2001-09-20           mature         2001-09-20                   0                               1224.486                    TRUE

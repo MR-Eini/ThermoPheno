@@ -431,21 +431,31 @@ for (ii in seq_len(nrow(cfg))) {
     
     
     all_matches[[key]]$evaluation_status <- "insufficient_calibration"
+    # Thermal-time rules shared by calibration and simulation (ThermoPheno >= 0.2.0
+    # accumulates the calibration with the simulation rules).
+    tt_rules <- list(
+      t_base = cc$t_base,
+      t_opt = cc$t_opt,
+      t_max_cut = cc$t_max_cut,
+      tt_mode = cc$tt_mode,
+      crop_type = cc$crop_type,
+      winter_dormancy_temp = cc$winter_dormancy_temp,
+      vernalization_required = isTRUE(cc$vernalization_required),
+      vernalization_days_required = cc$vernalization_days_required,
+      spring_regrowth_temp = cc$spring_regrowth_temp
+    )
     req <- tryCatch(
-      ThermoPheno::estimate_required_tt_from_observed(
+      do.call(ThermoPheno::estimate_required_tt_from_observed, c(list(
         weather = weather,
         observed_calendar = obs_site,
         calibration_years = calib_years,
         planting_col = "observed_planting_date",
         harvest_col = "observed_harvest_date",
         year_col = "crop_year",
-        t_base = cc$t_base,
-        t_opt = cc$t_opt,
-        t_max_cut = cc$t_max_cut,
-        tt_mode = cc$tt_mode,
         summary_fun = OBSERVED_TT_SUMMARY_FUN,
-        min_weather_coverage = MIN_WEATHER_COVERAGE
-      ),
+        min_weather_coverage = MIN_WEATHER_COVERAGE,
+        accumulation = "simulation"
+      ), tt_rules)),
       error = function(e) {
         warning("Calibration failed for ", key, ": ", conditionMessage(e))
         NULL
@@ -454,7 +464,7 @@ for (ii in seq_len(nrow(cfg))) {
     if (is.null(req) || req$n_valid_years < MIN_OBSERVED_TT_YEARS ||
         !is.finite(req$required_tt) || req$required_tt <= 0) next
 
-    req_method <- req$calibration_method
+    req_method <- paste(req$calibration_method, req$accumulation, sep = "/")
     req_n_valid <- req$n_valid_years
     all_matches[[key]]$valid_calibration_years <- req_n_valid
     all_matches[[key]]$evaluation_status <- "no_held_out_calendar"
@@ -475,28 +485,19 @@ for (ii in seq_len(nrow(cfg))) {
     
     all_matches[[key]]$evaluation_status <- "simulation_failed"
     sim <- tryCatch(
-      ThermoPheno::run_simulation(
+      do.call(ThermoPheno::run_simulation, c(list(
         weather = weather,
         crop_name = cc$crop_name,
         required_tt = req$required_tt,
         earliest_planting_mmdd = cc$earliest_planting_mmdd,
         latest_planting_mmdd = cc$latest_planting_mmdd,
         latest_harvest_mmdd = cc$latest_harvest_mmdd,
-        t_base = cc$t_base,
-        t_opt = cc$t_opt,
-        t_max_cut = cc$t_max_cut,
-        tt_mode = cc$tt_mode,
-        crop_type = cc$crop_type,
         min_mean_temp_plant = cc$min_mean_temp_plant,
         forced_harvest_allowed = isTRUE(cc$forced_harvest_allowed),
         min_fraction_tt_for_forced_harvest = cc$min_fraction_tt_for_forced_harvest,
-        winter_dormancy_temp = cc$winter_dormancy_temp,
-        vernalization_required = isTRUE(cc$vernalization_required),
-        vernalization_days_required = cc$vernalization_days_required,
-        spring_regrowth_temp = cc$spring_regrowth_temp,
         winter_plant_temp_min = cc$winter_plant_temp_min,
         winter_plant_temp_max = cc$winter_plant_temp_max
-      ), error = function(e) {
+      ), tt_rules)), error = function(e) {
         warning("Simulation failed for ", cc$crop_name, " / ", site$station_id_pheno, ": ", conditionMessage(e))
         NULL
       }

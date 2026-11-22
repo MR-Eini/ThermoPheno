@@ -1,0 +1,12 @@
+Maize harvest, common paired station-years
+         n   bias    mae   rmse    r2
+v0.1.1 152 -7.342 15.329 19.584 0.251
+v0.2.0 152 -7.336 15.322 19.576 0.252
+Sugar beet harvest, common paired station-years
+         n    bias    mae   rmse    r2
+v0.1.1 168 -15.917 19.369 24.486 0.055
+v0.2.0 168 -15.917 19.369 24.486 0.055
+Winter wheat harvest, common paired station-years
+         n   bias    mae   rmse    r2
+v0.1.1 209 13.335 14.522 17.177 0.096
+v0.2.0 209 -2.005  9.364 11.023 0.259
